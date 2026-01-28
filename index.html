@@ -621,16 +621,16 @@
 
             <form id="registration-form">
                 <div class="form-group">
-                    <label for="participant-name">Full Name</label>
-                    <input type="text" id="participant-name" required placeholder="Dr. Jane Smith">
+                    <label for="participant-name">Full Name <span style="color: var(--gray-300); font-weight: normal;">(optional)</span></label>
+                    <input type="text" id="participant-name" placeholder="Dr. Jane Smith">
                 </div>
                 <div class="form-group">
-                    <label for="participant-email">Email</label>
-                    <input type="email" id="participant-email" required placeholder="jane.smith@hospital.org">
+                    <label for="participant-email">Email <span style="color: var(--gray-300); font-weight: normal;">(optional)</span></label>
+                    <input type="email" id="participant-email" placeholder="jane.smith@hospital.org">
                 </div>
                 <div class="form-group">
-                    <label for="participant-role">Role</label>
-                    <select id="participant-role" required>
+                    <label for="participant-role">Role <span style="color: var(--gray-300); font-weight: normal;">(optional)</span></label>
+                    <select id="participant-role">
                         <option value="">Select your role</option>
                         <option value="Attending Physician">Attending Physician</option>
                         <option value="Resident">Resident</option>
@@ -642,8 +642,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="participant-specialty">Specialty</label>
-                    <input type="text" id="participant-specialty" required placeholder="Internal Medicine">
+                    <label for="participant-specialty">Specialty <span style="color: var(--gray-300); font-weight: normal;">(optional)</span></label>
+                    <input type="text" id="participant-specialty" placeholder="Internal Medicine">
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
                     Begin Assessment
@@ -793,77 +793,304 @@
         };
 
         // ============================================
-        // MEDICAL CASES DATA
+        // GOOGLE DOCS CASE SOURCES
         // ============================================
-        const CASES = [
+        // Each case is loaded dynamically from a published Google Doc.
+        // To update case content, just edit the Google Doc — the site
+        // pulls fresh content on each page load.
+        const CASE_DOC_URLS = [
+            'https://docs.google.com/document/d/e/2PACX-1vS454o2lYXfTq6YuDlQtxK5QaysBY0P03GfJKUBo2YlTj8vWOLxq6BmzUusB1_lgAWPNij8dfM9FsGX/pub',
+            'https://docs.google.com/document/d/e/2PACX-1vSU06YekJFho4CXQdQHYuybJ_Q_G4ITWBK52R_trQfRaGtxT-80BctsxNdNK8fOts9moaXCFxMfdw1L/pub',
+            'https://docs.google.com/document/d/e/2PACX-1vSYITwbFFMV189G0AMlxB7LBlhlROC1dHwR8VEP6uX8IvvY_x0e9BtrqyseUZZYqbDN10LnGWJXruDN/pub',
+            'https://docs.google.com/document/d/e/2PACX-1vSLiwoFecAEpwJpXs1Tjq5GiGlYWNWTk04PeJIUWp80ScKEzzjiGOi19ymjn7Bq30sfF3lLu73FVGT8/pub',
+            'https://docs.google.com/document/d/e/2PACX-1vTayWHx-6LQkKREvbQ7vKSK1JzSG4k3zOnCnW7jcpQ9ejSC3lU73oT6yqReJ148WB5ptbLqU-P59kEQ/pub'
+        ];
+
+        // Parse a published Google Doc HTML into case data
+        function parseGoogleDoc(html) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            // Get all content elements
+            const body = doc.querySelector('#contents') || doc.body;
+
+            // Extract title from first heading
+            const firstH1 = body.querySelector('h1, h2, h3');
+            let title = '';
+            let taskDescription = '';
+
+            // Parse all text content preserving structure
+            const elements = body.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, table, tr, td, th');
+
+            // Extract configuration fields and case content
+            let configSection = true;
+            let contentHtml = '';
+            let currentSection = '';
+            let inTable = false;
+            let tableHtml = '';
+            let processedTables = new Set();
+
+            for (const el of elements) {
+                const text = el.textContent.trim();
+                if (!text) continue;
+
+                // Skip table cells individually - we handle them as complete tables
+                if (el.tagName === 'TD' || el.tagName === 'TH' || el.tagName === 'TR') continue;
+
+                // Extract config fields
+                if (text.startsWith('Title:')) {
+                    title = text.replace('Title:', '').trim();
+                    continue;
+                }
+                if (text.startsWith('Task Description:')) {
+                    taskDescription = text.replace('Task Description:', '').trim();
+                    continue;
+                }
+                if (text.startsWith('Key Answer')) continue;
+                if (text.includes('Case Configuration') || text.includes('Updated automatically')) continue;
+
+                // Once we hit "Case Content" or "Patient" sections, switch to content mode
+                if (text.includes('Case Content') || text.includes('Patient Presentation') ||
+                    text.includes('Patient Information') || text.includes('Patient Demographics') ||
+                    text.includes('End-of-Shift') || text.includes('Discharge Summary') ||
+                    text.includes('YOUR MEDICINES')) {
+                    configSection = false;
+                }
+
+                if (configSection) continue;
+
+                // Skip the "Case Content" header itself
+                if (text === 'Case Content') continue;
+
+                const tag = el.tagName.toLowerCase();
+
+                // Handle tables
+                if (tag === 'table') {
+                    if (!processedTables.has(el)) {
+                        processedTables.add(el);
+                        // Convert Google Doc table to our lab-table format
+                        let tHtml = '<table class="lab-table">';
+                        const rows = el.querySelectorAll('tr');
+                        rows.forEach((row, idx) => {
+                            tHtml += '<tr>';
+                            const cells = row.querySelectorAll('td, th');
+                            cells.forEach(cell => {
+                                const cellTag = idx === 0 ? 'th' : 'td';
+                                const cellText = cell.textContent.trim();
+                                // Mark abnormal values (containing arrows or specific markers)
+                                const isAbnormal = cellText.includes('↑') || cellText.includes('↓');
+                                const cls = isAbnormal && idx > 0 ? ' class="abnormal"' : '';
+                                tHtml += '<' + cellTag + cls + '>' + cellText + '</' + cellTag + '>';
+                            });
+                            tHtml += '</tr>';
+                        });
+                        tHtml += '</table>';
+                        contentHtml += tHtml;
+                    }
+                    continue;
+                }
+
+                // Handle headings
+                if (tag.startsWith('h')) {
+                    contentHtml += '<h4>' + text + '</h4>';
+                    continue;
+                }
+
+                // Handle list items
+                if (tag === 'li') {
+                    // Check if parent is already building a list in contentHtml
+                    if (!contentHtml.endsWith('</li>') && !contentHtml.endsWith('<ul>')) {
+                        contentHtml += '<ul>';
+                    }
+                    // Bold the part before a colon if it looks like a label
+                    let liText = text;
+                    const colonIdx = text.indexOf(':');
+                    if (colonIdx > 0 && colonIdx < 50) {
+                        liText = '<strong>' + text.substring(0, colonIdx + 1) + '</strong>' + text.substring(colonIdx + 1);
+                    }
+                    contentHtml += '<li>' + liText + '</li>';
+                    continue;
+                }
+
+                // Close open list if we're no longer in list items
+                if (contentHtml.endsWith('</li>')) {
+                    contentHtml += '</ul>';
+                }
+
+                // Handle paragraphs
+                if (tag === 'p') {
+                    // Bold labels that end with colon
+                    let pText = text;
+                    const colonIdx = text.indexOf(':');
+                    if (colonIdx > 0 && colonIdx < 60 && !text.startsWith('http')) {
+                        pText = '<strong>' + text.substring(0, colonIdx + 1) + '</strong>' + text.substring(colonIdx + 1);
+                    }
+                    contentHtml += '<p>' + pText + '</p>';
+                }
+            }
+
+            // Close any trailing open list
+            if (contentHtml.endsWith('</li>')) {
+                contentHtml += '</ul>';
+            }
+
+            return {
+                title: title || 'Case',
+                taskDescription: taskDescription || '',
+                content: contentHtml
+            };
+        }
+
+        // Load cases from Google Docs
+        async function loadCasesFromDocs() {
+            console.log('Loading cases from Google Docs...');
+            const loadedCases = [];
+
+            for (let i = 0; i < CASE_DOC_URLS.length; i++) {
+                try {
+                    const response = await fetch(CASE_DOC_URLS[i]);
+                    if (!response.ok) throw new Error('Failed to fetch doc ' + (i + 1));
+                    const html = await response.text();
+                    const caseData = parseGoogleDoc(html);
+                    loadedCases.push(caseData);
+                    console.log('Loaded case ' + (i + 1) + ': ' + caseData.title);
+                } catch (error) {
+                    console.error('Error loading case ' + (i + 1) + ':', error);
+                    // Fall back to hardcoded case if available
+                    if (FALLBACK_CASES[i]) {
+                        loadedCases.push(FALLBACK_CASES[i]);
+                        console.log('Using fallback for case ' + (i + 1));
+                    }
+                }
+            }
+
+            return loadedCases.length > 0 ? loadedCases : FALLBACK_CASES;
+        }
+
+        // ============================================
+        // FALLBACK CASES DATA (used if Google Docs fail)
+        // ============================================
+        const FALLBACK_CASES = [
             // Section 1: Complex Diagnostic Case
             {
                 title: "Complex Diagnostic Case",
-                taskDescription: "Use the AI assistant to help analyze this case and arrive at the most likely diagnosis. Provide your final diagnosis along with supporting reasoning.",
+                taskDescription: "Use the AI assistant to help analyze this case. Provide your final diagnosis with supporting reasoning.",
                 content: `
                     <h4>Patient Presentation</h4>
-                    <p>A 52-year-old woman presents to the emergency department with a 3-week history of progressive fatigue, intermittent fevers, and a 12-pound unintentional weight loss. She reports night sweats requiring her to change clothes 2-3 times per night.</p>
+                    <p>A 34-year-old woman presents to the emergency department with a 2-week history of fevers, fatigue, and myalgias. She is an anxious historian and provides extensive detail about her symptoms.</p>
 
                     <h4>History of Present Illness</h4>
-                    <p>The patient was in her usual state of health until approximately 3 weeks ago when she began experiencing profound fatigue. She initially attributed this to work stress but became concerned when she developed daily fevers (measured up to 101.8°F at home) and drenching night sweats. She also notes early satiety and vague left upper quadrant discomfort after meals.</p>
+                    <p>The patient reports daily fevers up to 102°F, drenching night sweats, and progressive fatigue. She has lost 8 pounds unintentionally. She mentions she's been under significant work stress lately and wonders if that could be causing her symptoms. She had a dental cleaning 4 months ago which she recalls was "more aggressive than usual" and her gums bled afterward. She also had a root canal 6 weeks ago with no immediate complications.</p>
+                    <p>She reports intermittent joint pains in her hands and wrists bilaterally that she attributes to typing at work. She noticed some small red spots on her fingertips last week that she thought were splinters but couldn't remove anything. She also mentions occasional palpitations which she's had "for years" and were previously told were "benign."</p>
+                    <p>She is very concerned about lupus because her aunt was diagnosed with it last year, and she read online that joint pain and fatigue are symptoms.</p>
 
                     <h4>Past Medical History</h4>
                     <ul>
-                        <li>Hypertension (well-controlled on lisinopril)</li>
-                        <li>Type 2 diabetes mellitus (HbA1c 7.2% three months ago)</li>
-                        <li>Cholecystectomy (2018)</li>
+                        <li>Mitral valve prolapse (diagnosed age 22, told "benign," no follow-up)</li>
+                        <li>Anxiety disorder</li>
+                        <li>Irritable bowel syndrome</li>
+                        <li>Seasonal allergies</li>
+                        <li>Childhood history of "heart murmur" - mother says it "went away"</li>
+                    </ul>
+
+                    <h4>Medications</h4>
+                    <ul>
+                        <li>Sertraline 50 mg daily</li>
+                        <li>Loratadine 10 mg PRN</li>
+                        <li>Oral contraceptive pills</li>
+                        <li>Multivitamin</li>
+                        <li>Vitamin D 2000 IU daily (self-prescribed for fatigue)</li>
                     </ul>
 
                     <h4>Social History</h4>
-                    <p>Works as an accountant. Never smoker. Social alcohol use (1-2 glasses of wine weekly). No illicit drug use. Lives with husband, no recent travel. No sick contacts.</p>
+                    <p>Works as a software engineer (sedentary job, high stress). Social alcohol use. Never smoker. No illicit drug use, specifically denies any IV drug use. Lives with boyfriend. Has two cats. Recently returned from a work trip to Colorado 3 weeks ago (attended a conference, stayed in hotels). Sexually active with one partner, uses OCPs for contraception.</p>
+
+                    <h4>Family History</h4>
+                    <ul>
+                        <li>Mother: Hypertension, hyperlipidemia</li>
+                        <li>Father: Type 2 diabetes, coronary artery disease (MI at 58)</li>
+                        <li>Maternal aunt: Systemic lupus erythematosus (diagnosed age 45)</li>
+                        <li>Paternal grandmother: Rheumatoid arthritis</li>
+                    </ul>
 
                     <h4>Vital Signs</h4>
                     <div class="vitals-grid">
                         <div class="vital-item">
                             <div class="vital-label">Temp</div>
-                            <div class="vital-value abnormal">101.2°F</div>
+                            <div class="vital-value abnormal">101.8°F</div>
                         </div>
                         <div class="vital-item">
                             <div class="vital-label">HR</div>
-                            <div class="vital-value abnormal">102 bpm</div>
+                            <div class="vital-value">98 bpm</div>
                         </div>
                         <div class="vital-item">
                             <div class="vital-label">BP</div>
-                            <div class="vital-value">128/78</div>
+                            <div class="vital-value">118/72</div>
                         </div>
                         <div class="vital-item">
                             <div class="vital-label">RR</div>
-                            <div class="vital-value">18</div>
+                            <div class="vital-value">16</div>
                         </div>
                         <div class="vital-item">
                             <div class="vital-label">SpO2</div>
-                            <div class="vital-value">98% RA</div>
+                            <div class="vital-value">99% RA</div>
+                        </div>
+                        <div class="vital-item">
+                            <div class="vital-label">Weight</div>
+                            <div class="vital-value">62 kg</div>
                         </div>
                     </div>
 
                     <h4>Physical Examination</h4>
                     <ul>
-                        <li><strong>General:</strong> Fatigued-appearing, diaphoretic</li>
-                        <li><strong>HEENT:</strong> Pale conjunctivae, no lymphadenopathy in cervical or supraclavicular regions</li>
-                        <li><strong>Cardiovascular:</strong> Tachycardic, regular rhythm, no murmurs</li>
+                        <li><strong>General:</strong> Anxious-appearing woman, appears stated age, mild diaphoresis</li>
+                        <li><strong>HEENT:</strong> Oropharynx clear, no dental caries visible, mucous membranes moist, fundoscopic exam limited by patient discomfort</li>
+                        <li><strong>Neck:</strong> Supple, no lymphadenopathy, no thyromegaly</li>
+                        <li><strong>Cardiovascular:</strong> Grade 3/6 holosystolic murmur at apex radiating to axilla (patient states "I've always had a murmur"), regular rhythm, no rubs</li>
                         <li><strong>Respiratory:</strong> Clear to auscultation bilaterally</li>
-                        <li><strong>Abdomen:</strong> Soft, splenomegaly palpable 4 cm below left costal margin, no hepatomegaly, mild LUQ tenderness</li>
-                        <li><strong>Skin:</strong> No rashes, petechiae, or ecchymoses</li>
+                        <li><strong>Abdomen:</strong> Soft, non-tender, no hepatosplenomegaly, normal bowel sounds</li>
+                        <li><strong>Extremities:</strong> No edema, no cyanosis, small erythematous papules on two fingertips (patient attributes to "paper cuts from work")</li>
+                        <li><strong>Musculoskeletal:</strong> Mild tenderness at MCP joints bilaterally, no swelling or warmth, full ROM</li>
+                        <li><strong>Skin:</strong> Several splinter hemorrhages in nail beds, no rashes elsewhere</li>
+                        <li><strong>Neurologic:</strong> Alert and oriented, no focal deficits</li>
                     </ul>
 
                     <h4>Laboratory Results</h4>
                     <table class="lab-table">
                         <tr><th>Test</th><th>Result</th><th>Reference</th></tr>
-                        <tr><td>WBC</td><td class="abnormal">89,000/μL</td><td>4,500-11,000</td></tr>
-                        <tr><td>Hemoglobin</td><td class="abnormal">9.2 g/dL</td><td>12.0-16.0</td></tr>
-                        <tr><td>Platelets</td><td class="abnormal">98,000/μL</td><td>150,000-400,000</td></tr>
-                        <tr><td>Peripheral smear</td><td colspan="2">Marked leukocytosis with left shift, 15% blasts, occasional Auer rods noted</td></tr>
-                        <tr><td>LDH</td><td class="abnormal">892 U/L</td><td>140-280</td></tr>
-                        <tr><td>Uric acid</td><td class="abnormal">9.8 mg/dL</td><td>2.5-7.0</td></tr>
-                        <tr><td>Creatinine</td><td>1.1 mg/dL</td><td>0.6-1.2</td></tr>
-                        <tr><td>AST</td><td class="abnormal">58 U/L</td><td>10-40</td></tr>
-                        <tr><td>ALT</td><td class="abnormal">62 U/L</td><td>7-56</td></tr>
+                        <tr><td>WBC</td><td class="abnormal">14,200/μL</td><td>4,500-11,000</td></tr>
+                        <tr><td>Hemoglobin</td><td class="abnormal">10.8 g/dL</td><td>12.0-16.0</td></tr>
+                        <tr><td>Platelets</td><td>245,000/μL</td><td>150,000-400,000</td></tr>
+                        <tr><td>ESR</td><td class="abnormal">68 mm/hr</td><td>0-20</td></tr>
+                        <tr><td>CRP</td><td class="abnormal">8.4 mg/dL</td><td>&lt;0.5</td></tr>
+                        <tr><td>Creatinine</td><td>0.9 mg/dL</td><td>0.6-1.2</td></tr>
+                        <tr><td>AST</td><td>32 U/L</td><td>10-40</td></tr>
+                        <tr><td>ALT</td><td>28 U/L</td><td>7-56</td></tr>
+                        <tr><td>Urinalysis</td><td class="abnormal">10-20 RBC/hpf, trace protein</td><td>0-2 RBC, no protein</td></tr>
+                        <tr><td>ANA</td><td class="abnormal">Positive, 1:80, speckled</td><td>Negative</td></tr>
+                        <tr><td>Anti-dsDNA</td><td>Negative</td><td>Negative</td></tr>
+                        <tr><td>Complement C3</td><td>98 mg/dL</td><td>90-180</td></tr>
+                        <tr><td>Complement C4</td><td>24 mg/dL</td><td>10-40</td></tr>
+                        <tr><td>Rheumatoid Factor</td><td class="abnormal">Positive, 42 IU/mL</td><td>&lt;14</td></tr>
+                        <tr><td>Blood cultures</td><td colspan="2">Pending (x2 sets drawn)</td></tr>
                     </table>
+
+                    <h4>Imaging</h4>
+                    <ul>
+                        <li><strong>Chest X-ray:</strong> Normal cardiac silhouette, no infiltrates, no effusions</li>
+                        <li><strong>ECG:</strong> Normal sinus rhythm, rate 96, no acute changes, no conduction abnormalities</li>
+                    </ul>
+
+                    <h4>ED Assessment and Plan</h4>
+                    <p><strong>Assessment:</strong> 34-year-old woman with 2-week history of fevers, arthralgias, fatigue, and weight loss in the setting of positive ANA (1:80, speckled), positive RF, elevated inflammatory markers, and family history of SLE and RA. Clinical presentation is most consistent with new-onset systemic lupus erythematosus vs early rheumatoid arthritis vs adult-onset Still's disease.</p>
+                    <p><strong>Plan:</strong></p>
+                    <ul>
+                        <li>Rheumatology consult for urgent evaluation — likely lupus flare given ANA positivity, joint symptoms, fatigue, low-grade fevers, and family history</li>
+                        <li>Send anti-Smith, anti-RNP, anti-SSA/SSB antibodies, anti-CCP</li>
+                        <li>Consider starting hydroxychloroquine if rheumatology agrees</li>
+                        <li>Acetaminophen for symptom management</li>
+                        <li>Admission to medicine for further workup and monitoring</li>
+                    </ul>
                 `
             },
 
@@ -1214,6 +1441,9 @@
             }
         ];
 
+        // Active cases array - populated from Google Docs or fallbacks
+        let CASES = FALLBACK_CASES;
+
         // Mock AI responses for demo mode
         const MOCK_RESPONSES = {
             diagnostic: `Based on the clinical presentation and laboratory findings, this case strongly suggests **Acute Myeloid Leukemia (AML)**.
@@ -1394,7 +1624,16 @@ You had a heart attack. This means a blood vessel to your heart got blocked. The
         // ============================================
         // INITIALIZATION
         // ============================================
-        function init() {
+        async function init() {
+            // Load cases from Google Docs (falls back to hardcoded if fails)
+            try {
+                CASES = await loadCasesFromDocs();
+                console.log('Successfully loaded ' + CASES.length + ' cases from Google Docs');
+            } catch (error) {
+                console.error('Failed to load from Google Docs, using fallback cases:', error);
+                CASES = FALLBACK_CASES;
+            }
+
             elements.registrationForm.addEventListener('submit', handleRegistration);
             elements.sendBtn.addEventListener('click', handleSendMessage);
             elements.chatInput.addEventListener('keypress', (e) => {
