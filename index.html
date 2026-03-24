@@ -124,15 +124,16 @@
             color: var(--gray-700);
         }
 
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--gray-300);
             border-radius: 8px;
             font-size: 1rem;
+            font-family: inherit;
         }
 
-        .form-group input:focus, .form-group select:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
@@ -178,7 +179,7 @@
             padding: 20px;
             flex: 1;
             overflow-y: auto;
-            max-height: 500px;
+            max-height: 600px;
         }
 
         /* Section Navigation */
@@ -191,6 +192,7 @@
             margin-bottom: 20px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .section-btn {
@@ -224,7 +226,84 @@
         }
 
         .section-btn.completed .status-icon::after {
-            content: '✓';
+            content: '\2713';
+        }
+
+        .type-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .type-badge.dx { background: #dbeafe; color: #1e40af; }
+        .type-badge.mgmt { background: #d1fae5; color: #065f46; }
+        .section-btn.active .type-badge.dx { background: rgba(255,255,255,0.3); color: white; }
+        .section-btn.active .type-badge.mgmt { background: rgba(255,255,255,0.3); color: white; }
+        .section-btn.completed .type-badge { background: rgba(255,255,255,0.3); color: white; }
+
+        /* Phase indicator */
+        .phase-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .phase-indicator .phase-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--gray-700);
+        }
+
+        .phase-dots {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .phase-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--gray-300);
+            transition: all 0.2s;
+        }
+
+        .phase-dot.active {
+            background: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .phase-dot.completed {
+            background: var(--success);
+        }
+
+        /* Phase separator */
+        .phase-separator {
+            border: none;
+            border-top: 2px dashed var(--gray-300);
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .phase-separator-label {
+            background: white;
+            padding: 4px 12px;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-bottom: 12px;
+            border: 1px solid var(--gray-200);
+            border-radius: 4px;
         }
 
         /* Case Content */
@@ -381,6 +460,7 @@
             resize: none;
             min-height: 50px;
             max-height: 120px;
+            font-family: inherit;
         }
 
         .chat-input:focus {
@@ -402,21 +482,22 @@
         .send-btn:hover { background: var(--primary-dark); }
         .send-btn:disabled { background: var(--gray-300); cursor: not-allowed; }
 
-        /* Response Area */
-        .response-area {
-            margin-top: 20px;
+        /* Structured Response Forms */
+        .response-section {
+            margin-bottom: 20px;
         }
 
-        .response-area label {
+        .response-section label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 500;
             color: var(--gray-700);
+            font-size: 0.9rem;
         }
 
-        .response-textarea {
+        .response-section textarea {
             width: 100%;
-            min-height: 150px;
+            min-height: 100px;
             padding: 12px;
             border: 1px solid var(--gray-300);
             border-radius: 8px;
@@ -425,9 +506,86 @@
             font-family: inherit;
         }
 
-        .response-textarea:focus {
+        .response-section textarea:focus {
             outline: none;
             border-color: var(--primary);
+        }
+
+        .response-section input[type="text"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .response-section input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Diagnostic Grid */
+        .diagnostic-grid {
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            background: var(--gray-50);
+        }
+
+        .diagnostic-grid h4 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .differential-row {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .differential-row .row-header {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-bottom: 8px;
+        }
+
+        .differential-row .form-group {
+            margin-bottom: 10px;
+        }
+
+        .differential-row .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .differential-row label {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+        }
+
+        .confidence-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .confidence-group label.radio-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: normal;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .confidence-group input[type="radio"] {
+            cursor: pointer;
         }
 
         /* Buttons */
@@ -462,11 +620,17 @@
 
         .btn-success:hover { background: #047857; }
 
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .button-group {
             display: flex;
             gap: 12px;
             margin-top: 20px;
             justify-content: flex-end;
+            flex-wrap: wrap;
         }
 
         /* Task Instructions */
@@ -489,7 +653,7 @@
             font-size: 0.9rem;
         }
 
-        /* Medication Alert */
+        /* Medication list */
         .medication-list {
             background: var(--gray-50);
             border-radius: 8px;
@@ -586,6 +750,17 @@
             border: 1px solid var(--gray-200);
             white-space: pre-wrap;
             font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .section-result .phase-block {
+            margin-bottom: 12px;
+        }
+
+        .section-result .phase-block h5 {
+            color: var(--primary);
+            font-size: 0.85rem;
+            margin-bottom: 6px;
         }
 
         .hidden { display: none !important; }
@@ -617,7 +792,7 @@
     <div id="registration-page" class="container">
         <div class="registration">
             <h2>Medical AI Competency Assessment</h2>
-            <p>This assessment evaluates your ability to effectively use AI tools in clinical practice. The test takes approximately 30 minutes and covers diagnostic reasoning, treatment planning, error detection, summarization, and patient communication.</p>
+            <p>This assessment evaluates your ability to effectively use AI tools in clinical practice. You will work through clinical cases in phases, building your reasoning as new information is revealed.</p>
 
             <form id="registration-form">
                 <div class="form-group">
@@ -664,36 +839,16 @@
             </div>
         </div>
 
-        <div class="section-nav" id="section-nav">
-            <button class="section-btn active" data-section="0">
-                <span class="status-icon"></span>
-                1. Diagnosis
-            </button>
-            <button class="section-btn" data-section="1">
-                <span class="status-icon"></span>
-                2. Management
-            </button>
-            <button class="section-btn" data-section="2">
-                <span class="status-icon"></span>
-                3. Error Detection
-            </button>
-            <button class="section-btn" data-section="3">
-                <span class="status-icon"></span>
-                4. Summarization
-            </button>
-            <button class="section-btn" data-section="4">
-                <span class="status-icon"></span>
-                5. Patient Instructions
-            </button>
-        </div>
+        <div class="section-nav" id="section-nav"></div>
 
         <div class="main-layout">
             <!-- Case Panel -->
             <div class="panel">
                 <div class="panel-header">
-                    <h3>📋 Clinical Case</h3>
+                    <h3>Clinical Case</h3>
                 </div>
                 <div class="panel-content">
+                    <div id="phase-indicator"></div>
                     <div id="case-content"></div>
                 </div>
             </div>
@@ -701,7 +856,7 @@
             <!-- AI Chat Panel -->
             <div class="panel">
                 <div class="panel-header">
-                    <h3>🤖 AI Assistant</h3>
+                    <h3>AI Assistant</h3>
                 </div>
                 <div class="chat-container">
                     <div class="chat-messages" id="chat-messages">
@@ -725,21 +880,15 @@
         <!-- Response Area -->
         <div class="panel" style="margin-top: 20px;">
             <div class="panel-header">
-                <h3>✍️ Your Response</h3>
+                <h3>Your Response</h3>
             </div>
-            <div class="panel-content">
+            <div class="panel-content" style="max-height: none;">
                 <div class="task-instructions" id="task-instructions"></div>
-                <div class="response-area">
-                    <label for="user-response">Enter your final answer below:</label>
-                    <textarea
-                        class="response-textarea"
-                        id="user-response"
-                        placeholder="Type your response here..."
-                    ></textarea>
-                </div>
+                <div id="response-form-container"></div>
                 <div class="button-group">
-                    <button class="btn btn-secondary" id="prev-btn">← Previous</button>
-                    <button class="btn btn-primary" id="save-btn">Save & Continue →</button>
+                    <button class="btn btn-secondary hidden" id="prev-case-btn">Previous Case</button>
+                    <button class="btn btn-primary" id="advance-btn">Advance to Phase 2</button>
+                    <button class="btn btn-success hidden" id="next-case-btn">Next Case</button>
                     <button class="btn btn-success hidden" id="finish-btn">Finish Assessment</button>
                 </div>
             </div>
@@ -760,84 +909,72 @@
                     <div class="label">Time Taken</div>
                 </div>
                 <div class="summary-card">
-                    <div class="value" id="sections-completed">0/5</div>
-                    <div class="label">Sections Completed</div>
+                    <div class="value" id="sections-completed">0/4</div>
+                    <div class="label">Cases Completed</div>
                 </div>
                 <div class="summary-card">
                     <div class="value" id="ai-interactions">0</div>
                     <div class="label">AI Interactions</div>
+                </div>
+                <div class="summary-card">
+                    <div class="value" id="phases-completed">0</div>
+                    <div class="label">Phases Completed</div>
                 </div>
             </div>
 
             <div id="section-results"></div>
 
             <div class="button-group" style="justify-content: center;">
-                <button class="btn btn-primary" id="export-pdf-btn">📄 Export PDF Report</button>
+                <button class="btn btn-primary" id="export-pdf-btn">Export PDF Report</button>
             </div>
         </div>
     </div>
 
     <script>
         // ============================================
-        // CONFIGURATION - UPDATE THIS SECTION
+        // CONFIGURATION
         // ============================================
         const CONFIG = {
-            // Cloudflare Worker proxy (no local server needed)
             apiEndpoint: 'https://aitest-proxy.kevinkeet.workers.dev',
-
-            // Google Apps Script logging endpoint
             loggingEndpoint: 'https://script.google.com/macros/s/AKfycbxC99dfeTB35_QLg3V5StqQpB-qGh3OfhbcUNhkYgVPxzB6cT1Af2Byef3cS2Unyb9hgA/exec',
-
-            // Set to false to use real LLM via the proxy
             useMockResponses: false,
-
-            // Assessment duration in seconds (30 minutes)
             totalTime: 30 * 60
         };
 
         // ============================================
         // GOOGLE DOCS CASE SOURCES
         // ============================================
-        // Each case is loaded dynamically from a published Google Doc.
-        // To update case content, just edit the Google Doc — the site
-        // pulls fresh content on each page load.
         const CASE_DOC_URLS = [
             'https://docs.google.com/document/d/e/2PACX-1vS454o2lYXfTq6YuDlQtxK5QaysBY0P03GfJKUBo2YlTj8vWOLxq6BmzUusB1_lgAWPNij8dfM9FsGX/pub',
             'https://docs.google.com/document/d/e/2PACX-1vSU06YekJFho4CXQdQHYuybJ_Q_G4ITWBK52R_trQfRaGtxT-80BctsxNdNK8fOts9moaXCFxMfdw1L/pub',
             'https://docs.google.com/document/d/e/2PACX-1vSYITwbFFMV189G0AMlxB7LBlhlROC1dHwR8VEP6uX8IvvY_x0e9BtrqyseUZZYqbDN10LnGWJXruDN/pub',
-            'https://docs.google.com/document/d/e/2PACX-1vSLiwoFecAEpwJpXs1Tjq5GiGlYWNWTk04PeJIUWp80ScKEzzjiGOi19ymjn7Bq30sfF3lLu73FVGT8/pub',
-            'https://docs.google.com/document/d/e/2PACX-1vTayWHx-6LQkKREvbQ7vKSK1JzSG4k3zOnCnW7jcpQ9ejSC3lU73oT6yqReJ148WB5ptbLqU-P59kEQ/pub'
+            'https://docs.google.com/document/d/e/2PACX-1vSLiwoFecAEpwJpXs1Tjq5GiGlYWNWTk04PeJIUWp80ScKEzzjiGOi19ymjn7Bq30sfF3lLu73FVGT8/pub'
         ];
 
-        // Parse a published Google Doc HTML into case data
+        // ============================================
+        // GOOGLE DOC PARSER (Phase-based format)
+        // ============================================
         function parseGoogleDoc(html) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
-
-            // Get all content elements
             const body = doc.querySelector('#contents') || doc.body;
-
-            // Extract title from first heading
-            const firstH1 = body.querySelector('h1, h2, h3');
-            let title = '';
-            let taskDescription = '';
-
-            // Parse all text content preserving structure
             const elements = body.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, table, tr, td, th');
 
-            // Extract configuration fields and case content
-            let configSection = true;
-            let contentHtml = '';
-            let currentSection = '';
-            let inTable = false;
-            let tableHtml = '';
+            let title = '';
+            let taskDescription = '';
+            let caseType = 'diagnostic';
+            let phases = [
+                { content: '', task: '' },
+                { content: '', task: '' },
+                { content: '', task: '' }
+            ];
+
+            let currentTarget = null; // 'phase1content', 'phase1task', etc.
             let processedTables = new Set();
 
             for (const el of elements) {
                 const text = el.textContent.trim();
                 if (!text) continue;
-
-                // Skip table cells individually - we handle them as complete tables
                 if (el.tagName === 'TD' || el.tagName === 'TH' || el.tagName === 'TR') continue;
 
                 // Extract config fields
@@ -849,29 +986,32 @@
                     taskDescription = text.replace('Task Description:', '').trim();
                     continue;
                 }
-                if (text.startsWith('Key Answer')) continue;
-                if (text.includes('Case Configuration') || text.includes('Updated automatically')) continue;
-
-                // Once we hit "Case Content" or "Patient" sections, switch to content mode
-                if (text.includes('Case Content') || text.includes('Patient Presentation') ||
-                    text.includes('Patient Information') || text.includes('Patient Demographics') ||
-                    text.includes('End-of-Shift') || text.includes('Discharge Summary') ||
-                    text.includes('YOUR MEDICINES')) {
-                    configSection = false;
+                if (text.startsWith('Case Type:')) {
+                    const typeVal = text.replace('Case Type:', '').trim().toLowerCase();
+                    caseType = typeVal.includes('management') ? 'management' : 'diagnostic';
+                    continue;
                 }
 
-                if (configSection) continue;
+                // Detect phase section markers
+                if (text.match(/^Phase\s*1\s*Content:/i)) { currentTarget = 'p1c'; continue; }
+                if (text.match(/^Phase\s*1\s*Task:/i)) { currentTarget = 'p1t'; continue; }
+                if (text.match(/^Phase\s*2\s*Content:/i)) { currentTarget = 'p2c'; continue; }
+                if (text.match(/^Phase\s*2\s*Task:/i)) { currentTarget = 'p2t'; continue; }
+                if (text.match(/^Phase\s*3\s*Content:/i)) { currentTarget = 'p3c'; continue; }
+                if (text.match(/^Phase\s*3\s*Task:/i)) { currentTarget = 'p3t'; continue; }
 
-                // Skip the "Case Content" header itself
-                if (text === 'Case Content') continue;
+                // Skip config headers
+                if (text.includes('Case Configuration') || text.includes('Updated automatically')) continue;
+                if (text.startsWith('Key Answer')) continue;
+
+                if (!currentTarget) continue;
 
                 const tag = el.tagName.toLowerCase();
+                let htmlChunk = '';
 
-                // Handle tables
                 if (tag === 'table') {
                     if (!processedTables.has(el)) {
                         processedTables.add(el);
-                        // Convert Google Doc table to our lab-table format
                         let tHtml = '<table class="lab-table">';
                         const rows = el.querySelectorAll('tr');
                         rows.forEach((row, idx) => {
@@ -880,71 +1020,70 @@
                             cells.forEach(cell => {
                                 const cellTag = idx === 0 ? 'th' : 'td';
                                 const cellText = cell.textContent.trim();
-                                // Mark abnormal values (containing arrows or specific markers)
-                                const isAbnormal = cellText.includes('↑') || cellText.includes('↓');
+                                const isAbnormal = cellText.includes('\u2191') || cellText.includes('\u2193');
                                 const cls = isAbnormal && idx > 0 ? ' class="abnormal"' : '';
                                 tHtml += '<' + cellTag + cls + '>' + cellText + '</' + cellTag + '>';
                             });
                             tHtml += '</tr>';
                         });
                         tHtml += '</table>';
-                        contentHtml += tHtml;
+                        htmlChunk = tHtml;
                     }
-                    continue;
-                }
-
-                // Handle headings
-                if (tag.startsWith('h')) {
-                    contentHtml += '<h4>' + text + '</h4>';
-                    continue;
-                }
-
-                // Handle list items
-                if (tag === 'li') {
-                    // Check if parent is already building a list in contentHtml
-                    if (!contentHtml.endsWith('</li>') && !contentHtml.endsWith('<ul>')) {
-                        contentHtml += '<ul>';
-                    }
-                    // Bold the part before a colon if it looks like a label
+                } else if (tag.startsWith('h')) {
+                    htmlChunk = '<h4>' + text + '</h4>';
+                } else if (tag === 'li') {
                     let liText = text;
                     const colonIdx = text.indexOf(':');
                     if (colonIdx > 0 && colonIdx < 50) {
                         liText = '<strong>' + text.substring(0, colonIdx + 1) + '</strong>' + text.substring(colonIdx + 1);
                     }
-                    contentHtml += '<li>' + liText + '</li>';
-                    continue;
-                }
-
-                // Close open list if we're no longer in list items
-                if (contentHtml.endsWith('</li>')) {
-                    contentHtml += '</ul>';
-                }
-
-                // Handle paragraphs
-                if (tag === 'p') {
-                    // Bold labels that end with colon
+                    htmlChunk = '<li>' + liText + '</li>';
+                } else if (tag === 'p') {
                     let pText = text;
                     const colonIdx = text.indexOf(':');
                     if (colonIdx > 0 && colonIdx < 60 && !text.startsWith('http')) {
                         pText = '<strong>' + text.substring(0, colonIdx + 1) + '</strong>' + text.substring(colonIdx + 1);
                     }
-                    contentHtml += '<p>' + pText + '</p>';
+                    htmlChunk = '<p>' + pText + '</p>';
+                }
+
+                if (!htmlChunk) continue;
+
+                // Route to correct phase/field
+                const phaseIdx = currentTarget[1] === '1' ? 0 : currentTarget[1] === '2' ? 1 : 2;
+                const isTask = currentTarget[2] === 't';
+
+                if (isTask) {
+                    phases[phaseIdx].task += htmlChunk;
+                } else {
+                    phases[phaseIdx].content += htmlChunk;
                 }
             }
 
-            // Close any trailing open list
-            if (contentHtml.endsWith('</li>')) {
-                contentHtml += '</ul>';
-            }
+            // Wrap any loose li tags in ul
+            phases.forEach(p => {
+                p.content = wrapLooseLists(p.content);
+                p.task = wrapLooseLists(p.task);
+            });
 
             return {
                 title: title || 'Case',
                 taskDescription: taskDescription || '',
-                content: contentHtml
+                type: caseType,
+                phases: phases
             };
         }
 
-        // Load cases from Google Docs
+        function wrapLooseLists(html) {
+            // Simple pass: wrap consecutive <li> not already inside <ul>
+            return html.replace(/(<li>[\s\S]*?<\/li>)+/g, function(match) {
+                if (match.indexOf('<ul>') === -1) {
+                    return '<ul>' + match + '</ul>';
+                }
+                return match;
+            });
+        }
+
         async function loadCasesFromDocs() {
             console.log('Loading cases from Google Docs...');
             const loadedCases = [];
@@ -955,11 +1094,16 @@
                     if (!response.ok) throw new Error('Failed to fetch doc ' + (i + 1));
                     const html = await response.text();
                     const caseData = parseGoogleDoc(html);
-                    loadedCases.push(caseData);
-                    console.log('Loaded case ' + (i + 1) + ': ' + caseData.title);
+                    // If parsed case has no phase content, use fallback instead
+                    const hasPhaseContent = caseData.phases && caseData.phases.some(p => p.content && p.content.trim());
+                    if (hasPhaseContent) {
+                        loadedCases.push(caseData);
+                        console.log('Loaded case ' + (i + 1) + ': ' + caseData.title + ' (' + caseData.type + ')');
+                    } else {
+                        throw new Error('No phase content found in doc ' + (i + 1));
+                    }
                 } catch (error) {
                     console.error('Error loading case ' + (i + 1) + ':', error);
-                    // Fall back to hardcoded case if available
                     if (FALLBACK_CASES[i]) {
                         loadedCases.push(FALLBACK_CASES[i]);
                         console.log('Using fallback for case ' + (i + 1));
@@ -971,640 +1115,127 @@
         }
 
         // ============================================
-        // FALLBACK CASES DATA (used if Google Docs fail)
+        // FALLBACK CASES (4 cases, phase-based)
         // ============================================
         const FALLBACK_CASES = [
-            // Section 1: Complex Diagnostic Case
             {
-                title: "Complex Diagnostic Case",
-                taskDescription: "Use the AI assistant to help analyze this case. Provide your final diagnosis with supporting reasoning.",
-                content: `
-                    <h4>Patient Presentation</h4>
-                    <p>A 34-year-old woman presents to the emergency department with a 2-week history of fevers, fatigue, and myalgias. She is an anxious historian and provides extensive detail about her symptoms.</p>
-
-                    <h4>History of Present Illness</h4>
-                    <p>The patient reports daily fevers up to 102°F, drenching night sweats, and progressive fatigue. She has lost 8 pounds unintentionally. She mentions she's been under significant work stress lately and wonders if that could be causing her symptoms. She had a dental cleaning 4 months ago which she recalls was "more aggressive than usual" and her gums bled afterward. She also had a root canal 6 weeks ago with no immediate complications.</p>
-                    <p>She reports intermittent joint pains in her hands and wrists bilaterally that she attributes to typing at work. She noticed some small red spots on her fingertips last week that she thought were splinters but couldn't remove anything. She also mentions occasional palpitations which she's had "for years" and were previously told were "benign."</p>
-                    <p>She is very concerned about lupus because her aunt was diagnosed with it last year, and she read online that joint pain and fatigue are symptoms.</p>
-
-                    <h4>Past Medical History</h4>
-                    <ul>
-                        <li>Mitral valve prolapse (diagnosed age 22, told "benign," no follow-up)</li>
-                        <li>Anxiety disorder</li>
-                        <li>Irritable bowel syndrome</li>
-                        <li>Seasonal allergies</li>
-                        <li>Childhood history of "heart murmur" - mother says it "went away"</li>
-                    </ul>
-
-                    <h4>Medications</h4>
-                    <ul>
-                        <li>Sertraline 50 mg daily</li>
-                        <li>Loratadine 10 mg PRN</li>
-                        <li>Oral contraceptive pills</li>
-                        <li>Multivitamin</li>
-                        <li>Vitamin D 2000 IU daily (self-prescribed for fatigue)</li>
-                    </ul>
-
-                    <h4>Social History</h4>
-                    <p>Works as a software engineer (sedentary job, high stress). Social alcohol use. Never smoker. No illicit drug use, specifically denies any IV drug use. Lives with boyfriend. Has two cats. Recently returned from a work trip to Colorado 3 weeks ago (attended a conference, stayed in hotels). Sexually active with one partner, uses OCPs for contraception.</p>
-
-                    <h4>Family History</h4>
-                    <ul>
-                        <li>Mother: Hypertension, hyperlipidemia</li>
-                        <li>Father: Type 2 diabetes, coronary artery disease (MI at 58)</li>
-                        <li>Maternal aunt: Systemic lupus erythematosus (diagnosed age 45)</li>
-                        <li>Paternal grandmother: Rheumatoid arthritis</li>
-                    </ul>
-
-                    <h4>Vital Signs</h4>
-                    <div class="vitals-grid">
-                        <div class="vital-item">
-                            <div class="vital-label">Temp</div>
-                            <div class="vital-value abnormal">101.8°F</div>
-                        </div>
-                        <div class="vital-item">
-                            <div class="vital-label">HR</div>
-                            <div class="vital-value">98 bpm</div>
-                        </div>
-                        <div class="vital-item">
-                            <div class="vital-label">BP</div>
-                            <div class="vital-value">118/72</div>
-                        </div>
-                        <div class="vital-item">
-                            <div class="vital-label">RR</div>
-                            <div class="vital-value">16</div>
-                        </div>
-                        <div class="vital-item">
-                            <div class="vital-label">SpO2</div>
-                            <div class="vital-value">99% RA</div>
-                        </div>
-                        <div class="vital-item">
-                            <div class="vital-label">Weight</div>
-                            <div class="vital-value">62 kg</div>
-                        </div>
-                    </div>
-
-                    <h4>Physical Examination</h4>
-                    <ul>
-                        <li><strong>General:</strong> Anxious-appearing woman, appears stated age, mild diaphoresis</li>
-                        <li><strong>HEENT:</strong> Oropharynx clear, no dental caries visible, mucous membranes moist, fundoscopic exam limited by patient discomfort</li>
-                        <li><strong>Neck:</strong> Supple, no lymphadenopathy, no thyromegaly</li>
-                        <li><strong>Cardiovascular:</strong> Grade 3/6 holosystolic murmur at apex radiating to axilla (patient states "I've always had a murmur"), regular rhythm, no rubs</li>
-                        <li><strong>Respiratory:</strong> Clear to auscultation bilaterally</li>
-                        <li><strong>Abdomen:</strong> Soft, non-tender, no hepatosplenomegaly, normal bowel sounds</li>
-                        <li><strong>Extremities:</strong> No edema, no cyanosis, small erythematous papules on two fingertips (patient attributes to "paper cuts from work")</li>
-                        <li><strong>Musculoskeletal:</strong> Mild tenderness at MCP joints bilaterally, no swelling or warmth, full ROM</li>
-                        <li><strong>Skin:</strong> Several splinter hemorrhages in nail beds, no rashes elsewhere</li>
-                        <li><strong>Neurologic:</strong> Alert and oriented, no focal deficits</li>
-                    </ul>
-
-                    <h4>Laboratory Results</h4>
-                    <table class="lab-table">
-                        <tr><th>Test</th><th>Result</th><th>Reference</th></tr>
-                        <tr><td>WBC</td><td class="abnormal">14,200/μL</td><td>4,500-11,000</td></tr>
-                        <tr><td>Hemoglobin</td><td class="abnormal">10.8 g/dL</td><td>12.0-16.0</td></tr>
-                        <tr><td>Platelets</td><td>245,000/μL</td><td>150,000-400,000</td></tr>
-                        <tr><td>ESR</td><td class="abnormal">68 mm/hr</td><td>0-20</td></tr>
-                        <tr><td>CRP</td><td class="abnormal">8.4 mg/dL</td><td>&lt;0.5</td></tr>
-                        <tr><td>Creatinine</td><td>0.9 mg/dL</td><td>0.6-1.2</td></tr>
-                        <tr><td>AST</td><td>32 U/L</td><td>10-40</td></tr>
-                        <tr><td>ALT</td><td>28 U/L</td><td>7-56</td></tr>
-                        <tr><td>Urinalysis</td><td class="abnormal">10-20 RBC/hpf, trace protein</td><td>0-2 RBC, no protein</td></tr>
-                        <tr><td>ANA</td><td class="abnormal">Positive, 1:80, speckled</td><td>Negative</td></tr>
-                        <tr><td>Anti-dsDNA</td><td>Negative</td><td>Negative</td></tr>
-                        <tr><td>Complement C3</td><td>98 mg/dL</td><td>90-180</td></tr>
-                        <tr><td>Complement C4</td><td>24 mg/dL</td><td>10-40</td></tr>
-                        <tr><td>Rheumatoid Factor</td><td class="abnormal">Positive, 42 IU/mL</td><td>&lt;14</td></tr>
-                        <tr><td>Blood cultures</td><td colspan="2">Pending (x2 sets drawn)</td></tr>
-                    </table>
-
-                    <h4>Imaging</h4>
-                    <ul>
-                        <li><strong>Chest X-ray:</strong> Normal cardiac silhouette, no infiltrates, no effusions</li>
-                        <li><strong>ECG:</strong> Normal sinus rhythm, rate 96, no acute changes, no conduction abnormalities</li>
-                    </ul>
-
-                    <h4>ED Assessment and Plan</h4>
-                    <p><strong>Assessment:</strong> 34-year-old woman with 2-week history of fevers, arthralgias, fatigue, and weight loss in the setting of positive ANA (1:80, speckled), positive RF, elevated inflammatory markers, and family history of SLE and RA. Clinical presentation is most consistent with new-onset systemic lupus erythematosus vs early rheumatoid arthritis vs adult-onset Still's disease.</p>
-                    <p><strong>Plan:</strong></p>
-                    <ul>
-                        <li>Rheumatology consult for urgent evaluation — likely lupus flare given ANA positivity, joint symptoms, fatigue, low-grade fevers, and family history</li>
-                        <li>Send anti-Smith, anti-RNP, anti-SSA/SSB antibodies, anti-CCP</li>
-                        <li>Consider starting hydroxychloroquine if rheumatology agrees</li>
-                        <li>Acetaminophen for symptom management</li>
-                        <li>Admission to medicine for further workup and monitoring</li>
-                    </ul>
-                `
+                title: "Acute Chest Pain in a Young Woman",
+                taskDescription: "Diagnostic Reasoning",
+                type: "diagnostic",
+                phases: [
+                    {
+                        content: '<h4>Patient Presentation</h4><p>A 28-year-old woman presents to the emergency department with acute onset chest pain and dyspnea for approximately 2 hours. The pain is pleuritic in nature, worsening with inspiration. She denies any recent trauma.</p><p>She describes the pain as sharp, right-sided, rated 7/10, with no radiation. She feels short of breath and anxious. No cough, hemoptysis, or fever.</p>',
+                        task: '<p>Review the initial presentation. Begin developing your differential diagnosis based on the limited information available. Consider what additional history and examination findings would help narrow your differential.</p>'
+                    },
+                    {
+                        content: '<h4>Past Medical History</h4><ul><li><strong>Medications:</strong> Combined oral contraceptive pills for 3 years</li><li><strong>Travel:</strong> 8-hour long-haul flight 5 days ago (conference travel)</li><li><strong>Family History:</strong> Mother diagnosed with DVT at age 52</li><li>No prior surgeries, no smoking, no known clotting disorders</li></ul><h4>Physical Examination</h4><ul><li><strong>Vitals:</strong> HR 110 bpm, BP 128/78, RR 22, SpO2 94% on room air, Temp 37.4C</li><li><strong>General:</strong> Anxious-appearing young woman, mild respiratory distress</li><li><strong>Cardiovascular:</strong> Tachycardic, regular rhythm, no murmurs, no JVD</li><li><strong>Respiratory:</strong> Clear lungs bilaterally, no wheezes or crackles</li><li><strong>Extremities:</strong> No leg swelling, no calf tenderness, no erythema</li><li><strong>Skin:</strong> No rashes</li></ul>',
+                        task: '<p>Integrate the history and physical examination findings. The absence of leg swelling is notable. Refine your differential and consider which investigations you would order.</p>'
+                    },
+                    {
+                        content: '<h4>Investigation Results</h4><table class="lab-table"><tr><th>Test</th><th>Result</th><th>Reference</th></tr><tr><td>D-dimer</td><td class="abnormal">850 ng/mL</td><td>&lt;500</td></tr><tr><td>Troponin I</td><td class="abnormal">0.08 ng/mL</td><td>&lt;0.04</td></tr><tr><td>WBC</td><td>9.2 x10^9/L</td><td>4.0-11.0</td></tr><tr><td>Hemoglobin</td><td>13.8 g/dL</td><td>12.0-16.0</td></tr><tr><td>Platelets</td><td>267 x10^9/L</td><td>150-400</td></tr></table><h4>Chest X-ray</h4><p>Small right-sided pleural effusion. No pneumothorax. Normal cardiac silhouette.</p><h4>ECG</h4><p>Sinus tachycardia at 108 bpm. S1Q3T3 pattern noted. No ST elevation or depression. Right axis deviation.</p><h4>Key Considerations</h4><p>The mildly elevated troponin (0.08) raises the question of right heart strain. The S1Q3T3 pattern, while not specific, combined with the clinical picture is suggestive. Absence of leg swelling does not exclude DVT/PE as many cases of PE have no clinical evidence of DVT.</p>',
+                        task: '<p>Complete your diagnostic assessment using the structured reflection grid below. Consider: PE vs pneumothorax vs pericarditis vs musculoskeletal/anxiety. Weigh the supporting and opposing factors for each.</p>'
+                    }
+                ]
             },
-
-            // Section 2: Complex Management Case
             {
-                title: "Complex Management Case",
-                taskDescription: "Use the AI assistant to help develop a comprehensive treatment plan for this patient. Include specific medications with dosages, monitoring parameters, and follow-up recommendations.",
-                content: `
-                    <h4>Patient Information</h4>
-                    <p>A 68-year-old man with recently diagnosed heart failure with reduced ejection fraction (HFrEF) presents for establishment of care and medication optimization. He was hospitalized 2 weeks ago for acute decompensated heart failure.</p>
-
-                    <h4>Cardiac History</h4>
-                    <ul>
-                        <li>LVEF 25% on recent echocardiogram</li>
-                        <li>NYHA Class III symptoms (dyspnea with minimal exertion)</li>
-                        <li>Ischemic cardiomyopathy (s/p PCI to LAD 3 years ago)</li>
-                        <li>Paroxysmal atrial fibrillation</li>
-                    </ul>
-
-                    <h4>Other Medical History</h4>
-                    <ul>
-                        <li>Type 2 diabetes mellitus (HbA1c 8.1%)</li>
-                        <li>Chronic kidney disease stage 3b (eGFR 38 mL/min/1.73m²)</li>
-                        <li>Hypertension</li>
-                        <li>Hyperlipidemia</li>
-                        <li>GERD</li>
-                    </ul>
-
-                    <h4>Current Medications (from discharge)</h4>
-                    <div class="medication-list">
-                        <div class="medication-item">
-                            <span class="med-name">Furosemide</span>
-                            <span class="med-dose">40 mg PO BID</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Lisinopril</span>
-                            <span class="med-dose">5 mg PO daily</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Metoprolol succinate</span>
-                            <span class="med-dose">25 mg PO daily</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Aspirin</span>
-                            <span class="med-dose">81 mg PO daily</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Atorvastatin</span>
-                            <span class="med-dose">40 mg PO daily</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Metformin</span>
-                            <span class="med-dose">500 mg PO BID</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Omeprazole</span>
-                            <span class="med-dose">20 mg PO daily</span>
-                        </div>
-                    </div>
-
-                    <h4>Current Vital Signs</h4>
-                    <div class="vitals-grid">
-                        <div class="vital-item">
-                            <div class="vital-label">BP</div>
-                            <div class="vital-value">118/72</div>
-                        </div>
-                        <div class="vital-item">
-                            <div class="vital-label">HR</div>
-                            <div class="vital-value">78 bpm</div>
-                        </div>
-                        <div class="vital-item">
-                            <div class="vital-label">Weight</div>
-                            <div class="vital-value">92 kg</div>
-                        </div>
-                        <div class="vital-item">
-                            <div class="vital-label">SpO2</div>
-                            <div class="vital-value">95% RA</div>
-                        </div>
-                    </div>
-
-                    <h4>Current Labs</h4>
-                    <table class="lab-table">
-                        <tr><th>Test</th><th>Result</th><th>Reference</th></tr>
-                        <tr><td>Potassium</td><td>4.2 mEq/L</td><td>3.5-5.0</td></tr>
-                        <tr><td>Sodium</td><td>138 mEq/L</td><td>136-145</td></tr>
-                        <tr><td>Creatinine</td><td class="abnormal">1.9 mg/dL</td><td>0.7-1.3</td></tr>
-                        <tr><td>eGFR</td><td class="abnormal">38 mL/min</td><td>>60</td></tr>
-                        <tr><td>BNP</td><td class="abnormal">850 pg/mL</td><td><100</td></tr>
-                        <tr><td>HbA1c</td><td class="abnormal">8.1%</td><td><7.0%</td></tr>
-                    </table>
-
-                    <h4>Clinical Question</h4>
-                    <p>How would you optimize this patient's guideline-directed medical therapy (GDMT) for HFrEF while considering his comorbidities? Include specific medications, target doses, titration strategy, and monitoring plan.</p>
-                `
+                title: "Confusion in an Elderly Man",
+                taskDescription: "Diagnostic Reasoning",
+                type: "diagnostic",
+                phases: [
+                    {
+                        content: '<h4>Patient Presentation</h4><p>A 72-year-old man is brought to the emergency department by his family. They report 3 days of increasing confusion and decreased oral intake. He was found wandering in the neighborhood yesterday morning, unable to find his way home. His wife states he was at his baseline mental status earlier in the week.</p>',
+                        task: '<p>Consider the broad differential for acute/subacute confusion in an elderly man. What categories of causes should you consider? What additional history would be most valuable?</p>'
+                    },
+                    {
+                        content: '<h4>Past Medical History</h4><ul><li><strong>Hypertension</strong> (on lisinopril 20mg daily)</li><li><strong>Type 2 Diabetes Mellitus</strong> (on metformin 1000mg BID and glipizide 10mg BID)</li><li><strong>Mild CKD</strong> (baseline creatinine 1.4 mg/dL)</li><li><strong>BPH</strong> - PCP started doxazosin 2mg at bedtime 2 weeks ago</li></ul><h4>Medication Change</h4><p>His primary care physician started doxazosin 2mg at bedtime 2 weeks ago for bothersome urinary symptoms.</p><h4>Recent Events</h4><p>Wife reports he has been "unsteady on his feet" since starting the new medication and had a fall 4 days ago, hitting the right side of his head on a doorframe. He did not lose consciousness. They did not seek medical attention at the time.</p><h4>Physical Examination</h4><ul><li><strong>BP:</strong> 108/62 mmHg supine, <span class="abnormal">88/54 mmHg standing</span> (significant orthostatic drop)</li><li><strong>HR:</strong> 92 bpm</li><li><strong>Temp:</strong> 36.8C</li><li><strong>Mental Status:</strong> Oriented to person only. Follows simple commands inconsistently. Speech is coherent but slow.</li><li><strong>HEENT:</strong> Dry mucous membranes. Tender area over right temporal region from fall. No battle sign or raccoon eyes.</li><li><strong>Neuro:</strong> No focal motor or sensory deficits. Reflexes symmetric.</li><li><strong>Abdomen:</strong> Soft, non-tender</li></ul>',
+                        task: '<p>The medication change, fall history, and orthostatic hypotension are critical findings. Refine your differential considering multiple concurrent problems. What labs and imaging would you prioritize?</p>'
+                    },
+                    {
+                        content: '<h4>Laboratory Results</h4><table class="lab-table"><tr><th>Test</th><th>Result</th><th>Reference</th></tr><tr><td>Sodium</td><td class="abnormal">128 mEq/L</td><td>136-145</td></tr><tr><td>Potassium</td><td class="abnormal">5.2 mEq/L</td><td>3.5-5.0</td></tr><tr><td>BUN</td><td class="abnormal">42 mg/dL</td><td>7-20</td></tr><tr><td>Creatinine</td><td class="abnormal">2.1 mg/dL</td><td>0.7-1.3 (baseline 1.4)</td></tr><tr><td>Glucose</td><td class="abnormal">58 mg/dL</td><td>70-100</td></tr><tr><td>WBC</td><td class="abnormal">11.2 x10^9/L</td><td>4.5-11.0</td></tr><tr><td>Hemoglobin</td><td>13.1 g/dL</td><td>13.5-17.5</td></tr></table><h4>Urinalysis</h4><p>No evidence of urinary tract infection.</p><h4>CT Head without Contrast</h4><p>Small chronic subdural hematoma along the right convexity, measuring approximately 8mm in maximal thickness. No midline shift. No acute intracranial hemorrhage. Age-appropriate cerebral atrophy.</p><h4>TSH</h4><p>Within normal limits (2.1 mIU/L).</p><h4>Key Diagnostic Challenge</h4><p>This patient has MULTIPLE concurrent contributing diagnoses: hypoglycemia (glipizide + decreased oral intake), acute kidney injury (dehydration from doxazosin-induced orthostasis + poor intake), hyponatremia, and chronic subdural hematoma from the fall. The challenge is recognizing this is NOT a single unifying diagnosis but rather a convergence of multiple problems, many precipitated by the recent addition of doxazosin.</p>',
+                        task: '<p>Complete your diagnostic assessment. This case has multiple concurrent problems rather than a single unifying diagnosis. Use the structured reflection grid to work through the differentials systematically.</p>'
+                    }
+                ]
             },
-
-            // Section 3: Error Detection Case
             {
-                title: "Error Detection Case",
-                taskDescription: "Review this patient's medication list and clinical information. Use the AI assistant to help identify ALL medication errors, drug interactions, contraindications, or safety concerns. List each issue found with an explanation.",
-                content: `
-                    <h4>Patient Information</h4>
-                    <p>A 74-year-old woman presents for routine follow-up. She has multiple chronic conditions and takes numerous medications. Review her current medication list for potential errors, interactions, or safety concerns.</p>
-
-                    <h4>Medical History</h4>
-                    <ul>
-                        <li>Atrial fibrillation (on anticoagulation)</li>
-                        <li>Hypertension</li>
-                        <li>Osteoporosis with recent vertebral compression fracture</li>
-                        <li>Chronic kidney disease stage 4 (eGFR 22 mL/min/1.73m²)</li>
-                        <li>Type 2 diabetes mellitus</li>
-                        <li>Gout</li>
-                        <li>Chronic pain syndrome</li>
-                        <li>Anxiety</li>
-                        <li>History of GI bleeding (peptic ulcer, 2022)</li>
-                    </ul>
-
-                    <h4>Allergies</h4>
-                    <p><strong>Sulfa drugs</strong> - rash</p>
-
-                    <h4>Current Medications</h4>
-                    <div class="medication-list">
-                        <div class="medication-item">
-                            <span class="med-name">Warfarin</span>
-                            <span class="med-dose">5 mg PO daily (INR goal 2-3)</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Aspirin</span>
-                            <span class="med-dose">325 mg PO daily</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Lisinopril</span>
-                            <span class="med-dose">20 mg PO daily</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Metformin</span>
-                            <span class="med-dose">1000 mg PO BID</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Alendronate</span>
-                            <span class="med-dose">70 mg PO weekly</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Ibuprofen</span>
-                            <span class="med-dose">600 mg PO TID PRN pain</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Hydrochlorothiazide</span>
-                            <span class="med-dose">25 mg PO daily</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Alprazolam</span>
-                            <span class="med-dose">0.5 mg PO TID</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Zolpidem</span>
-                            <span class="med-dose">10 mg PO QHS</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Allopurinol</span>
-                            <span class="med-dose">300 mg PO daily</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Vitamin D3</span>
-                            <span class="med-dose">2000 IU PO daily</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Calcium carbonate</span>
-                            <span class="med-dose">600 mg PO BID</span>
-                        </div>
-                    </div>
-
-                    <h4>Recent Labs</h4>
-                    <table class="lab-table">
-                        <tr><th>Test</th><th>Result</th><th>Reference</th></tr>
-                        <tr><td>INR</td><td>2.4</td><td>2.0-3.0</td></tr>
-                        <tr><td>Creatinine</td><td class="abnormal">2.8 mg/dL</td><td>0.6-1.2</td></tr>
-                        <tr><td>eGFR</td><td class="abnormal">22 mL/min</td><td>>60</td></tr>
-                        <tr><td>Potassium</td><td>4.8 mEq/L</td><td>3.5-5.0</td></tr>
-                        <tr><td>HbA1c</td><td>7.4%</td><td><7.0%</td></tr>
-                        <tr><td>Hemoglobin</td><td class="abnormal">10.2 g/dL</td><td>12.0-16.0</td></tr>
-                    </table>
-
-                    <h4>Your Task</h4>
-                    <p>Identify ALL medication-related problems including: drug-drug interactions, drug-disease contraindications, inappropriate dosing for renal function, duplicate therapies, high-risk medications in elderly, and any other safety concerns.</p>
-                `
+                title: "Post-MI Management Decisions",
+                taskDescription: "Management Reasoning",
+                type: "management",
+                phases: [
+                    {
+                        content: '<h4>Patient Information</h4><p>A 58-year-old man, now 3 days post-STEMI with successful primary PCI to the LAD (drug-eluting stent placed). Echocardiogram shows LVEF 35% with anterior wall hypokinesis.</p><p>Currently hemodynamically stable on telemetry. Standard post-MI medications have been initiated. The care team is planning for discharge.</p><h4>Current Medications</h4><ul><li>Aspirin 81mg daily</li><li>Ticagrelor 90mg BID</li><li>Atorvastatin 80mg daily</li><li>Metoprolol succinate 25mg daily</li><li>Lisinopril 5mg daily</li><li>Pantoprazole 40mg daily</li></ul>',
+                        task: '<p>Review the initial post-MI management. Consider what guideline-directed medical therapy (GDMT) components are present and what may be missing given the reduced EF. Develop your initial management plan.</p>'
+                    },
+                    {
+                        content: '<h4>Social and Practical Factors</h4><ul><li><strong>Occupation:</strong> Long-haul truck driver with a Commercial Driver License (CDL). Certain cardiac medications and conditions may affect CDL eligibility.</li><li><strong>Insurance:</strong> Will lose current insurance in 4 weeks when he changes jobs. New employer has a 90-day waiting period for benefits.</li><li><strong>Living Situation:</strong> Lives alone in a rural area, 45 minutes from the nearest hospital.</li><li><strong>History:</strong> GI bleed 2 years ago while taking NSAIDs for back pain (peptic ulcer found on endoscopy, treated and healed).</li><li><strong>Adherence Concerns:</strong> Patient expresses reluctance about "taking too many pills" and wants to know the minimum necessary.</li></ul>',
+                        task: '<p>Revise your management plan considering these real-world constraints. How do the occupational, insurance, geographic, and adherence factors change your approach? What trade-offs must you consider?</p>'
+                    },
+                    {
+                        content: '<h4>Day of Discharge Update</h4><p><strong>Repeat Echocardiogram:</strong> LVEF now 30% (decreased from 35% at admission).</p><p><strong>Telemetry:</strong> 3-beat run of non-sustained ventricular tachycardia (NSVT) recorded overnight. Patient was asymptomatic.</p><h4>Patient Concerns</h4><p>The patient asks: "Doc, when can I get back to work driving? I can\'t afford to be off much longer." He also mentions he stopped taking the statin this morning because "it made my legs feel achy and I need my legs for the truck."</p><h4>Updated Clinical Picture</h4><p>The declining EF and NSVT raise the question of ICD candidacy (though typically reassessed at 40 days post-MI / 90 days of optimal GDMT). The CDL implications of an ICD are significant. The patient\'s statin non-adherence needs to be addressed. The medication regimen must balance guideline-directed care with practical realities.</p>',
+                        task: '<p>Finalize your discharge management plan. Address: the declining EF and arrhythmia, statin non-adherence, return-to-work timeline, ICD discussion, and a realistic follow-up plan given insurance gaps and distance from care.</p>'
+                    }
+                ]
             },
-
-            // Section 4: Summarization Task
             {
-                title: "Clinical Summarization",
-                taskDescription: "Use the AI assistant to help summarize this complex case presentation into a concise one-paragraph handoff summary suitable for communicating to an oncoming physician.",
-                content: `
-                    <h4>Admission Note - Complex Case for Summarization</h4>
-
-                    <p><strong>Chief Complaint:</strong> Altered mental status and fever</p>
-
-                    <p><strong>History of Present Illness:</strong>
-                    Mr. James Thompson is a 71-year-old male with a past medical history significant for type 2 diabetes mellitus complicated by peripheral neuropathy and nephropathy (baseline creatinine 1.8), atrial fibrillation on apixaban, hypertension, hyperlipidemia, and recent right total knee arthroplasty (3 weeks ago) who presents from his rehabilitation facility with altered mental status and fever. Per the rehab nursing staff, the patient was noted to be increasingly confused over the past 48 hours, initially thought to be sundowning, but this morning he was found to be febrile to 102.8°F and was not oriented to place or time. His baseline mental status is alert and oriented x3.</p>
-
-                    <p>The patient's daughter reports that he complained of right knee pain and swelling two days ago, which was attributed to post-operative healing. She also notes he has had decreased oral intake and appeared more fatigued. She denies any witnessed falls, head trauma, cough, shortness of breath, chest pain, abdominal pain, diarrhea, or urinary symptoms, though she notes he has had a Foley catheter since surgery. No recent sick contacts. No known COVID-19 exposure.</p>
-
-                    <p><strong>Past Medical History:</strong> Type 2 diabetes mellitus with peripheral neuropathy and nephropathy, atrial fibrillation (CHA2DS2-VASc 4), hypertension, hyperlipidemia, benign prostatic hyperplasia, osteoarthritis, chronic kidney disease stage 3, depression</p>
-
-                    <p><strong>Past Surgical History:</strong> Right total knee arthroplasty (3 weeks ago), appendectomy (1985), cataract surgery bilateral</p>
-
-                    <p><strong>Home Medications:</strong> Apixaban 5mg BID, metformin 500mg BID, lisinopril 10mg daily, amlodipine 5mg daily, atorvastatin 40mg daily, gabapentin 300mg TID, tamsulosin 0.4mg daily, sertraline 50mg daily, acetaminophen 650mg Q6H PRN pain</p>
-
-                    <p><strong>Allergies:</strong> Penicillin (hives)</p>
-
-                    <p><strong>Social History:</strong> Retired engineer. Former smoker (quit 20 years ago, 30 pack-year history). Occasional alcohol use (1-2 beers/week, none since surgery). Lives with wife who is his primary caregiver. Has been in rehabilitation facility since knee surgery.</p>
-
-                    <p><strong>Family History:</strong> Father died of MI at 68, mother with Alzheimer's dementia, sister with breast cancer</p>
-
-                    <p><strong>Physical Examination:</strong></p>
-                    <ul>
-                        <li>Vitals: T 102.4°F, HR 112, BP 98/62, RR 22, SpO2 94% on 2L NC</li>
-                        <li>General: Elderly male, appears acutely ill, intermittently agitated, diaphoretic</li>
-                        <li>HEENT: Dry mucous membranes, pupils equal and reactive</li>
-                        <li>Neck: Supple, no meningismus, no JVD</li>
-                        <li>Cardiac: Tachycardic, irregularly irregular, no murmurs appreciated</li>
-                        <li>Lungs: Clear to auscultation bilaterally, no wheezes/crackles</li>
-                        <li>Abdomen: Soft, non-tender, non-distended, normal bowel sounds</li>
-                        <li>Right Knee: Surgical incision with surrounding erythema (8cm x 6cm), warmth, moderate effusion, tenderness to palpation, limited ROM due to pain. No purulent drainage at incision site.</li>
-                        <li>Extremities: 1+ pitting edema bilateral lower extremities, Foley catheter in place with cloudy urine</li>
-                        <li>Neurologic: Alert but oriented only to self, follows simple commands inconsistently, no focal deficits, moving all extremities</li>
-                    </ul>
-
-                    <p><strong>Laboratory Results:</strong></p>
-                    <ul>
-                        <li>WBC 18,400 (88% neutrophils, 6% bands)</li>
-                        <li>Hemoglobin 10.8, Platelets 342,000</li>
-                        <li>BMP: Na 134, K 4.9, Cl 98, CO2 18, BUN 48, Creatinine 2.9 (baseline 1.8), Glucose 287</li>
-                        <li>Lactate 3.2 mmol/L</li>
-                        <li>Procalcitonin 8.4 ng/mL</li>
-                        <li>Urinalysis: Large leukocyte esterase, positive nitrites, >100 WBC, many bacteria</li>
-                        <li>Blood cultures: Pending (2 sets drawn)</li>
-                        <li>Right knee arthrocentesis: Turbid fluid, WBC 52,000 (92% PMNs), no crystals, gram stain shows gram-positive cocci in clusters, culture pending</li>
-                    </ul>
-
-                    <p><strong>Imaging:</strong></p>
-                    <ul>
-                        <li>Chest X-ray: No acute cardiopulmonary process</li>
-                        <li>Right knee X-ray: Post-surgical changes, moderate joint effusion, no hardware loosening</li>
-                        <li>CT Head without contrast: Age-appropriate atrophy, no acute intracranial abnormality</li>
-                    </ul>
-
-                    <p><strong>Assessment and Plan:</strong>
-                    71-year-old male with DM, CKD, recent TKA presenting with sepsis likely secondary to prosthetic joint infection and concurrent UTI. Also with acute kidney injury and delirium. Patient meets sepsis criteria. Orthopedics emergently consulted for likely surgical washout. Patient started on vancomycin and cefepime (renally dosed) given penicillin allergy. Foley removed after obtaining culture. IV fluid resuscitation initiated with close monitoring of volume status given cardiac history. Apixaban held. Blood glucose management with sliding scale insulin. Goals of care discussion with family pending - patient is full code per rehab records.</p>
-                `
-            },
-
-            // Section 5: Patient-Friendly Discharge Instructions
-            {
-                title: "Patient Communication",
-                taskDescription: "Use the AI assistant to help convert this discharge summary into clear, patient-friendly discharge instructions that a patient with limited health literacy could understand.",
-                content: `
-                    <h4>Discharge Summary</h4>
-
-                    <p><strong>Patient:</strong> Maria Santos, 58-year-old female</p>
-                    <p><strong>Admission Date:</strong> January 20, 2026</p>
-                    <p><strong>Discharge Date:</strong> January 25, 2026</p>
-
-                    <p><strong>Principal Diagnosis:</strong> ST-elevation myocardial infarction (STEMI), anterior wall</p>
-
-                    <p><strong>Secondary Diagnoses:</strong></p>
-                    <ul>
-                        <li>Type 2 diabetes mellitus</li>
-                        <li>Hypertension</li>
-                        <li>Hyperlipidemia</li>
-                        <li>Newly diagnosed heart failure with reduced ejection fraction (LVEF 35%)</li>
-                    </ul>
-
-                    <p><strong>Hospital Course:</strong>
-                    Patient presented with acute onset substernal chest pain and diaphoresis. ECG showed ST elevations in V1-V4. Emergent cardiac catheterization revealed 100% occlusion of the proximal LAD. Successful PCI performed with drug-eluting stent placement. Post-procedure course complicated by transient cardiogenic shock requiring brief inotropic support. Echocardiogram showed anterior wall hypokinesis with LVEF 35%. Patient stabilized on guideline-directed medical therapy. Participated in cardiac rehabilitation education. Tobacco cessation counseling provided.</p>
-
-                    <p><strong>Discharge Medications:</strong></p>
-                    <div class="medication-list">
-                        <div class="medication-item">
-                            <span class="med-name">Aspirin</span>
-                            <span class="med-dose">81 mg PO daily - LIFELONG</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Ticagrelor (Brilinta)</span>
-                            <span class="med-dose">90 mg PO BID - for 12 months (DO NOT STOP without talking to cardiologist)</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Metoprolol succinate</span>
-                            <span class="med-dose">50 mg PO daily</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Lisinopril</span>
-                            <span class="med-dose">10 mg PO daily</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Atorvastatin</span>
-                            <span class="med-dose">80 mg PO at bedtime</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Eplerenone</span>
-                            <span class="med-dose">25 mg PO daily</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Empagliflozin</span>
-                            <span class="med-dose">10 mg PO daily</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Metformin</span>
-                            <span class="med-dose">500 mg PO BID (continue home dose)</span>
-                        </div>
-                        <div class="medication-item">
-                            <span class="med-name">Nitroglycerin SL</span>
-                            <span class="med-dose">0.4 mg PRN chest pain (max 3 doses, call 911 if no relief)</span>
-                        </div>
-                    </div>
-
-                    <p><strong>Allergies:</strong> NKDA</p>
-
-                    <p><strong>Activity Restrictions:</strong></p>
-                    <ul>
-                        <li>No driving for 1 week</li>
-                        <li>No lifting >10 lbs for 2 weeks</li>
-                        <li>Cardiac rehabilitation enrollment scheduled</li>
-                        <li>Gradually increase activity as tolerated</li>
-                    </ul>
-
-                    <p><strong>Diet:</strong> Heart-healthy, low sodium (<2g/day), diabetic diet</p>
-
-                    <p><strong>Follow-up Appointments:</strong></p>
-                    <ul>
-                        <li>Cardiology: Dr. Chen, February 1, 2026 at 2:00 PM</li>
-                        <li>Primary Care: Dr. Williams, February 8, 2026 at 10:00 AM</li>
-                        <li>Cardiac Rehabilitation: Starts February 3, 2026</li>
-                    </ul>
-
-                    <p><strong>Warning Signs - Seek immediate medical attention if:</strong></p>
-                    <ul>
-                        <li>Chest pain not relieved by nitroglycerin</li>
-                        <li>Shortness of breath at rest or worsening with activity</li>
-                        <li>Rapid weight gain (>3 lbs in 1 day or >5 lbs in 1 week)</li>
-                        <li>Swelling in legs/ankles</li>
-                        <li>Dizziness or fainting</li>
-                        <li>Unusual bleeding or bruising</li>
-                    </ul>
-
-                    <p><strong>Your Task:</strong> Create patient-friendly discharge instructions that explain: what happened during hospitalization, all medications (what they're for, how to take them), warning signs in plain language, and follow-up care. Use language appropriate for someone with limited health literacy (aim for 6th grade reading level). Avoid medical jargon.</p>
-                `
+                title: "Complex Diabetes Management",
+                taskDescription: "Management Reasoning",
+                type: "management",
+                phases: [
+                    {
+                        content: '<h4>Patient Information</h4><p>A 45-year-old woman with type 2 diabetes mellitus presents for routine follow-up. She was diagnosed with T2DM 5 years ago.</p><h4>Current Status</h4><ul><li><strong>HbA1c:</strong> 9.2% (target &lt;7%)</li><li><strong>BMI:</strong> 34 kg/m2</li><li><strong>BP:</strong> 138/86 mmHg</li></ul><h4>Current Medications</h4><ul><li>Metformin 1000mg BID</li><li>Glipizide 10mg BID</li></ul><h4>Chart Review</h4><p>No documented diabetes complications to date. Last eye exam 1 year ago was normal. No foot exams documented recently. Lipid panel and renal function not checked in 8 months.</p>',
+                        task: '<p>Assess the current diabetes management. Identify gaps in care and develop an initial management plan. What additional information do you need?</p>'
+                    },
+                    {
+                        content: '<h4>Patient-Reported Symptoms</h4><p>She reports episodes of sweating and shakiness occurring most days before lunch, which she manages by eating candy. These episodes started about 3 months ago when her glipizide was increased.</p><h4>Occupational Information</h4><p>She works as a school bus driver. Hypoglycemic episodes while driving are a significant safety concern.</p><h4>Family History Update</h4><p>Her father died of a myocardial infarction at age 67, just 3 months ago. She is grieving and worried about her own cardiovascular risk.</p><h4>New Lab Results</h4><table class="lab-table"><tr><th>Test</th><th>Result</th><th>Reference</th></tr><tr><td>LDL Cholesterol</td><td class="abnormal">142 mg/dL</td><td>&lt;100</td></tr><tr><td>HDL Cholesterol</td><td>44 mg/dL</td><td>&gt;50</td></tr><tr><td>Triglycerides</td><td class="abnormal">198 mg/dL</td><td>&lt;150</td></tr><tr><td>eGFR</td><td class="abnormal">58 mL/min/1.73m2</td><td>&gt;60 (was 78 last year)</td></tr><tr><td>Urine Albumin/Creatinine Ratio</td><td class="abnormal">180 mg/g</td><td>&lt;30</td></tr><tr><td>Creatinine</td><td class="abnormal">1.2 mg/dL</td><td>0.6-1.1</td></tr></table><h4>Cost Concerns</h4><p>Patient is currently uninsured and paying cash for all medications and visits. Cost is a major barrier to care.</p>',
+                        task: '<p>Significant new findings: declining kidney function with albuminuria, hypoglycemia risk with her occupation, cardiovascular risk factors, and cost constraints. Revise your management plan with these factors in mind.</p>'
+                    },
+                    {
+                        content: '<h4>Patient Questions and New Findings</h4><p>After discussing medication options, the patient shares: "My friend is on Ozempic and lost 30 pounds. I want to try that. But I looked up the cost and it\'s $900 a month without insurance. Is there a way I can get it?"</p><p>She also mentions tingling in her feet that has been present for about 2 months, gradually worsening. She did not mention it earlier because she thought it was "just from standing all day."</p><h4>Foot Examination</h4><ul><li>Reduced monofilament sensation bilateral feet (4/10 sites detected bilaterally)</li><li>Diminished ankle reflexes bilaterally</li><li>No skin breakdown, calluses on both great toes</li><li>Pedal pulses palpable bilaterally</li></ul><h4>Updated Clinical Picture</h4><p>The patient now has documented:<br>- Diabetic nephropathy (eGFR 58, UACR 180) -- newly discovered<br>- Diabetic peripheral neuropathy -- newly discovered<br>- Recurrent hypoglycemia on current regimen<br>- Uncontrolled diabetes (A1c 9.2%)<br>- Elevated cardiovascular risk<br>- Significant cost constraints<br>- Occupational safety concerns</p>',
+                        task: '<p>Finalize your comprehensive management plan addressing all identified issues. Consider SGLT2 inhibitor indication (renal protection), the hypoglycemia and occupation issue, cost-effective alternatives, neuropathy management, and how to address the patient\'s request for semaglutide given cost realities.</p>'
+                    }
+                ]
             }
         ];
 
-        // Active cases array - populated from Google Docs or fallbacks
+        // Active cases array
         let CASES = FALLBACK_CASES;
-
-        // Mock AI responses for demo mode
-        const MOCK_RESPONSES = {
-            diagnostic: `Based on the clinical presentation and laboratory findings, this case strongly suggests **Acute Myeloid Leukemia (AML)**.
-
-Key diagnostic features:
-1. **Constitutional symptoms**: B-symptoms (fever, night sweats, weight loss) over 3 weeks
-2. **Marked leukocytosis**: WBC 89,000/μL with left shift
-3. **Peripheral smear**: 15% blasts with **Auer rods** (pathognomonic for AML)
-4. **Cytopenias**: Anemia (Hgb 9.2) and thrombocytopenia (platelets 98K)
-5. **Splenomegaly**: Consistent with extramedullary hematopoiesis
-6. **Elevated LDH and uric acid**: Reflecting high cell turnover
-
-The presence of Auer rods on peripheral smear is essentially diagnostic of AML and distinguishes this from other causes of leukocytosis.
-
-**Recommended next steps:**
-- Urgent hematology/oncology consultation
-- Bone marrow biopsy with cytogenetics and molecular studies
-- Tumor lysis syndrome prophylaxis (hydration, allopurinol)
-- Flow cytometry for immunophenotyping`,
-
-            management: `For this patient with HFrEF (LVEF 25%), here's an evidence-based GDMT optimization plan:
-
-**Current gaps in GDMT:**
-- No ARNI (should replace ACEi)
-- No SGLT2 inhibitor
-- No MRA
-- Beta-blocker and ACEi at sub-target doses
-
-**Recommended changes:**
-
-1. **Switch Lisinopril → Sacubitril/Valsartan (Entresto)**
-   - Start: 24/26 mg BID (reduced dose for renal function)
-   - Wait 36 hours after stopping lisinopril
-   - Target: 97/103 mg BID
-
-2. **Add Empagliflozin (Jardiance) 10 mg daily**
-   - Safe with eGFR 38
-   - Also benefits diabetes control
-   - Monitor for hypotension
-
-3. **Add Spironolactone 12.5 mg daily**
-   - Monitor K+ and creatinine in 1 week
-   - Target: 25-50 mg daily if tolerated
-
-4. **Uptitrate Metoprolol succinate**
-   - Current: 25 mg → Target: 200 mg daily
-   - Increase every 2 weeks as tolerated
-
-**Monitoring plan:**
-- BMP in 1-2 weeks after each change
-- Watch for hyperkalemia, AKI, hypotension
-- Consider reducing/stopping metformin if eGFR declines
-
-**Note**: Given CKD Stage 3b, dose adjustments and close monitoring are essential.`,
-
-            errors: `I've identified **9 significant medication safety concerns**:
-
-**1. CRITICAL - NSAID + Anticoagulation + GI Bleeding History**
-Ibuprofen 600mg TID with warfarin dramatically increases GI bleeding risk, especially with prior peptic ulcer. **Discontinue ibuprofen immediately.**
-
-**2. CRITICAL - Metformin contraindicated (eGFR 22)**
-Metformin should be stopped when eGFR <30 due to lactic acidosis risk. **Discontinue metformin.**
-
-**3. HIGH RISK - Dual antiplatelet + anticoagulant**
-Aspirin 325mg + warfarin without clear indication (no recent ACS/stent). If AFib alone, aspirin adds bleeding risk without benefit. **Reassess need for aspirin or reduce to 81mg if indicated.**
-
-**4. RENAL DOSING - Allopurinol dose too high**
-With eGFR 22, allopurinol should be reduced to 100mg daily to prevent toxicity.
-
-**5. SULFA ALLERGY - Hydrochlorothiazide**
-HCTZ is a sulfonamide diuretic - potential cross-reactivity with documented sulfa allergy. Consider alternative.
-
-**6. FALL RISK - Dual sedatives in elderly**
-Alprazolam + zolpidem (Beers Criteria): High fall/fracture risk, cognitive impairment. **Taper and discontinue both.**
-
-**7. DRUG INTERACTION - Calcium + Alendronate**
-Calcium decreases alendronate absorption. Must be separated by at least 30 minutes (ideally 2 hours).
-
-**8. RENAL - Alendronate relatively contraindicated**
-Not recommended with eGFR <35. Consider IV zoledronic acid or denosumab instead.
-
-**9. NSAID + CKD + ACEi**
-"Triple whammy" - Ibuprofen + Lisinopril + diuretic with CKD causes additive nephrotoxicity.`,
-
-            summarization: `**Handoff Summary:**
-
-Mr. Thompson is a 71-year-old male with DM, CKD (baseline Cr 1.8), AFib on apixaban, and recent right TKA (3 weeks ago) admitted with sepsis. He has **two infectious sources**: a **septic prosthetic joint** (knee aspirate 52K WBCs, gram-positive cocci in clusters) and a **complicated UTI** (Foley-associated). He presented with fever to 102.8°F, altered mental status, hypotension (98/62), tachycardia, and lactate 3.2. He has developed AKI (Cr 2.9 from 1.8) and delirium. Currently on vancomycin and cefepime (renally dosed) given penicillin allergy. Orthopedics consulted for emergent surgical washout of the knee - this is the priority intervention. Anticoagulation held. Blood cultures and knee cultures pending. Goals of care discussion with family is pending; currently full code. Key overnight concerns: hemodynamic stability post-operatively, renal function trending, and mental status improvement with infection source control.`,
-
-            patient: `# Going Home After Your Heart Attack
-
-## What Happened
-You had a heart attack. This means a blood vessel to your heart got blocked. The doctors put in a small tube called a stent to open it back up. Your heart muscle was damaged, so it's not pumping as strongly as before. With your medications and lifestyle changes, it can get better.
-
-## Your Medications - Very Important!
-
-**Blood Thinners (NEVER stop without asking your doctor):**
-• **Aspirin** - Take 1 small pill every morning. This keeps your stent open. Take forever.
-• **Ticagrelor (Brilinta)** - Take 1 pill in the morning AND 1 pill at night. VERY IMPORTANT for your stent. Take for 1 year.
-
-**Heart Medications:**
-• **Metoprolol** - Slows your heart to help it heal. Take 1 pill every morning.
-• **Lisinopril** - Protects your heart. Take 1 pill every morning. May make you cough - that's OK.
-• **Atorvastatin** - Lowers cholesterol. Take 1 pill at bedtime.
-• **Eplerenone** - Helps your heart pump better. Take 1 pill every morning.
-
-**Diabetes Medications:**
-• **Empagliflozin** - NEW pill that helps your heart AND blood sugar. Take every morning.
-• **Metformin** - Continue as before for diabetes.
-
-**Emergency Medication:**
-• **Nitroglycerin tablets** - For chest pain only. Put under your tongue. If pain doesn't go away after 1 pill, call 911.
-
-## Warning Signs - Call 911 Right Away If:
-❌ Chest pain that won't go away
-❌ Can't catch your breath
-❌ Feel like you might faint
-
-## Call Your Doctor If:
-⚠️ Feet or ankles swell up
-⚠️ Gain more than 3 pounds in one day
-⚠️ Unusual bruising or bleeding
-⚠️ Feel very tired or weak
-
-## Your Appointments
-📅 Heart Doctor (Dr. Chen): February 1 at 2:00 PM
-📅 Regular Doctor (Dr. Williams): February 8 at 10:00 AM
-📅 Heart Exercise Program: Starts February 3
-
-## Activity
-✓ Rest for the first week
-✓ No driving for 1 week
-✓ Don't lift anything heavy (like groceries) for 2 weeks
-✓ Walking is good - start slow
-
-## Diet
-• Less salt (no adding salt, avoid chips/fast food)
-• Fruits, vegetables, whole grains
-• Watch your portions for diabetes`
-        };
 
         // ============================================
         // APPLICATION STATE
         // ============================================
         let state = {
             participant: null,
-            currentSection: 0,
-            responses: [{}, {}, {}, {}, {}], // Each section: {response: '', chatHistory: []}
+            currentCase: 0,
+            phases: [0, 0, 0, 0], // Current phase index per case (0, 1, 2)
+            phaseSubmitted: [
+                [false, false, false],
+                [false, false, false],
+                [false, false, false],
+                [false, false, false]
+            ],
+            responses: [
+                { phases: [{}, {}, {}] },
+                { phases: [{}, {}, {}] },
+                { phases: [{}, {}, {}] },
+                { phases: [{}, {}, {}] }
+            ],
+            chatHistories: [
+                [[], [], []], // case 0, phases 0-2
+                [[], [], []],
+                [[], [], []],
+                [[], [], []]
+            ],
             startTime: null,
             endTime: null,
             timeRemaining: CONFIG.totalTime,
             timerInterval: null,
-            totalAiInteractions: 0
+            totalAiInteractions: 0,
+            caseCompleted: [false, false, false, false]
         };
 
         // ============================================
         // DOM ELEMENTS
         // ============================================
-        const elements = {
+        const els = {
             registrationPage: document.getElementById('registration-page'),
             assessmentPage: document.getElementById('assessment-page'),
             resultsPage: document.getElementById('results-page'),
@@ -1612,14 +1243,16 @@ You had a heart attack. This means a blood vessel to your heart got blocked. The
             timer: document.getElementById('timer'),
             progressFill: document.getElementById('progress-fill'),
             sectionNav: document.getElementById('section-nav'),
+            phaseIndicator: document.getElementById('phase-indicator'),
             caseContent: document.getElementById('case-content'),
             taskInstructions: document.getElementById('task-instructions'),
             chatMessages: document.getElementById('chat-messages'),
             chatInput: document.getElementById('chat-input'),
             sendBtn: document.getElementById('send-btn'),
-            userResponse: document.getElementById('user-response'),
-            prevBtn: document.getElementById('prev-btn'),
-            saveBtn: document.getElementById('save-btn'),
+            responseFormContainer: document.getElementById('response-form-container'),
+            prevCaseBtn: document.getElementById('prev-case-btn'),
+            advanceBtn: document.getElementById('advance-btn'),
+            nextCaseBtn: document.getElementById('next-case-btn'),
             finishBtn: document.getElementById('finish-btn'),
             exportPdfBtn: document.getElementById('export-pdf-btn')
         };
@@ -1628,35 +1261,35 @@ You had a heart attack. This means a blood vessel to your heart got blocked. The
         // INITIALIZATION
         // ============================================
         async function init() {
-            // Load cases from Google Docs (falls back to hardcoded if fails)
             try {
                 CASES = await loadCasesFromDocs();
-                console.log('Successfully loaded ' + CASES.length + ' cases from Google Docs');
+                console.log('Successfully loaded ' + CASES.length + ' cases');
             } catch (error) {
                 console.error('Failed to load from Google Docs, using fallback cases:', error);
                 CASES = FALLBACK_CASES;
             }
 
-            elements.registrationForm.addEventListener('submit', handleRegistration);
-            elements.sendBtn.addEventListener('click', handleSendMessage);
-            elements.chatInput.addEventListener('keypress', (e) => {
+            // Adjust state arrays to match case count
+            const numCases = CASES.length;
+            state.phases = new Array(numCases).fill(0);
+            state.phaseSubmitted = Array.from({ length: numCases }, () => [false, false, false]);
+            state.responses = Array.from({ length: numCases }, () => ({ phases: [{}, {}, {}] }));
+            state.chatHistories = Array.from({ length: numCases }, () => [[], [], []]);
+            state.caseCompleted = new Array(numCases).fill(false);
+
+            els.registrationForm.addEventListener('submit', handleRegistration);
+            els.sendBtn.addEventListener('click', handleSendMessage);
+            els.chatInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     handleSendMessage();
                 }
             });
-            elements.prevBtn.addEventListener('click', handlePrevious);
-            elements.saveBtn.addEventListener('click', handleSaveAndContinue);
-            elements.finishBtn.addEventListener('click', handleFinish);
-            elements.exportPdfBtn.addEventListener('click', exportToPDF);
-
-            // Section navigation
-            document.querySelectorAll('.section-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const section = parseInt(btn.dataset.section);
-                    navigateToSection(section);
-                });
-            });
+            els.prevCaseBtn.addEventListener('click', handlePrevCase);
+            els.advanceBtn.addEventListener('click', handleAdvance);
+            els.nextCaseBtn.addEventListener('click', handleNextCase);
+            els.finishBtn.addEventListener('click', handleFinish);
+            els.exportPdfBtn.addEventListener('click', exportToPDF);
         }
 
         // ============================================
@@ -1671,17 +1304,16 @@ You had a heart attack. This means a blood vessel to your heart got blocked. The
                 specialty: document.getElementById('participant-specialty').value,
                 date: new Date().toISOString()
             };
-
             startAssessment();
         }
 
         function startAssessment() {
-            elements.registrationPage.classList.add('hidden');
-            elements.assessmentPage.classList.remove('hidden');
-
+            els.registrationPage.classList.add('hidden');
+            els.assessmentPage.classList.remove('hidden');
             state.startTime = new Date();
             startTimer();
-            loadSection(0);
+            buildSectionNav();
+            loadCase(0);
         }
 
         // ============================================
@@ -1692,7 +1324,6 @@ You had a heart attack. This means a blood vessel to your heart got blocked. The
             state.timerInterval = setInterval(() => {
                 state.timeRemaining--;
                 updateTimerDisplay();
-
                 if (state.timeRemaining <= 0) {
                     clearInterval(state.timerInterval);
                     handleFinish();
@@ -1703,121 +1334,384 @@ You had a heart attack. This means a blood vessel to your heart got blocked. The
         function updateTimerDisplay() {
             const minutes = Math.floor(state.timeRemaining / 60);
             const seconds = state.timeRemaining % 60;
-            elements.timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-            // Update timer color based on time remaining
-            elements.timer.classList.remove('warning', 'danger');
-            if (state.timeRemaining <= 300) { // 5 minutes
-                elements.timer.classList.add('danger');
-            } else if (state.timeRemaining <= 600) { // 10 minutes
-                elements.timer.classList.add('warning');
+            els.timer.textContent = minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+            els.timer.classList.remove('warning', 'danger');
+            if (state.timeRemaining <= 300) {
+                els.timer.classList.add('danger');
+            } else if (state.timeRemaining <= 600) {
+                els.timer.classList.add('warning');
             }
         }
 
         // ============================================
         // SECTION NAVIGATION
         // ============================================
-        function loadSection(index) {
-            const caseData = CASES[index];
-            state.currentSection = index;
-
-            // Update case content
-            elements.caseContent.innerHTML = caseData.content;
-
-            // Update task instructions
-            elements.taskInstructions.innerHTML = `
-                <h4>📝 Task ${index + 1} of 5: ${caseData.title}</h4>
-                <p>${caseData.taskDescription}</p>
-            `;
-
-            // Load saved response if exists
-            elements.userResponse.value = state.responses[index].response || '';
-
-            // Load chat history
-            loadChatHistory(index);
-
-            // Update navigation buttons
-            elements.prevBtn.style.visibility = index === 0 ? 'hidden' : 'visible';
-            elements.saveBtn.textContent = index === 4 ? 'Save Response' : 'Save & Continue →';
-            elements.finishBtn.classList.toggle('hidden', index !== 4);
-
-            // Update section nav styling
-            updateSectionNav();
-
-            // Update progress bar
-            updateProgress();
-        }
-
-        function loadChatHistory(index) {
-            elements.chatMessages.innerHTML = `
-                <div class="message system">
-                    Use the AI assistant to help with this task. Your interaction will be recorded for review.
-                </div>
-            `;
-
-            const history = state.responses[index].chatHistory || [];
-            history.forEach(msg => {
-                addMessageToChat(msg.role, msg.content, false);
+        function buildSectionNav() {
+            els.sectionNav.innerHTML = '';
+            CASES.forEach((c, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'section-btn' + (i === 0 ? ' active' : '');
+                btn.dataset.section = i;
+                const badgeClass = c.type === 'diagnostic' ? 'dx' : 'mgmt';
+                const badgeText = c.type === 'diagnostic' ? 'Dx' : 'Mgmt';
+                btn.innerHTML = '<span class="status-icon"></span> ' +
+                    (i + 1) + '. ' + truncate(c.title, 25) +
+                    ' <span class="type-badge ' + badgeClass + '">' + badgeText + '</span>';
+                btn.addEventListener('click', () => {
+                    saveCurrentPhaseResponse();
+                    loadCase(i);
+                });
+                els.sectionNav.appendChild(btn);
             });
         }
 
+        function truncate(str, len) {
+            return str.length > len ? str.substring(0, len) + '...' : str;
+        }
+
         function updateSectionNav() {
-            document.querySelectorAll('.section-btn').forEach((btn, index) => {
+            document.querySelectorAll('.section-btn').forEach((btn, i) => {
                 btn.classList.remove('active', 'completed');
-                if (index === state.currentSection) {
+                if (i === state.currentCase) {
                     btn.classList.add('active');
-                } else if (state.responses[index].response) {
+                } else if (state.caseCompleted[i]) {
                     btn.classList.add('completed');
                 }
             });
         }
 
         function updateProgress() {
-            const completed = state.responses.filter(r => r.response).length;
-            const progress = (completed / 5) * 100;
-            elements.progressFill.style.width = `${progress}%`;
-        }
-
-        function navigateToSection(index) {
-            // Save current response before navigating
-            saveCurrentResponse();
-            loadSection(index);
-        }
-
-        function handlePrevious() {
-            if (state.currentSection > 0) {
-                saveCurrentResponse();
-                loadSection(state.currentSection - 1);
-            }
-        }
-
-        function handleSaveAndContinue() {
-            saveCurrentResponse();
-            if (state.currentSection < 4) {
-                loadSection(state.currentSection + 1);
-            }
-        }
-
-        function saveCurrentResponse() {
-            state.responses[state.currentSection].response = elements.userResponse.value;
+            const totalPhases = CASES.length * 3;
+            let completedPhases = 0;
+            state.phaseSubmitted.forEach(casePhases => {
+                casePhases.forEach(s => { if (s) completedPhases++; });
+            });
+            const progress = (completedPhases / totalPhases) * 100;
+            els.progressFill.style.width = progress + '%';
         }
 
         // ============================================
-        // CHAT FUNCTIONALITY
+        // CASE & PHASE LOADING
         // ============================================
+        function loadCase(caseIndex) {
+            state.currentCase = caseIndex;
+            updateSectionNav();
+            renderPhase();
+        }
+
+        function renderPhase() {
+            const ci = state.currentCase;
+            const pi = state.phases[ci];
+            const caseData = CASES[ci];
+
+            // Phase indicator
+            let dotsHtml = '';
+            for (let i = 0; i < 3; i++) {
+                let cls = 'phase-dot';
+                if (i < pi) cls += ' completed';
+                else if (i === pi) cls += ' active';
+                dotsHtml += '<div class="' + cls + '"></div>';
+            }
+            els.phaseIndicator.innerHTML =
+                '<div class="phase-indicator">' +
+                '<span class="phase-label">Phase ' + (pi + 1) + ' of 3</span>' +
+                '<div class="phase-dots">' + dotsHtml + '</div>' +
+                '</div>';
+
+            // Case content: show all revealed phases cumulatively
+            let contentHtml = '';
+            for (let i = 0; i <= pi; i++) {
+                if (i > 0) {
+                    contentHtml += '<div class="phase-separator-label">Phase ' + (i + 1) + ' \u2014 Additional Data</div>';
+                }
+                contentHtml += caseData.phases[i].content;
+            }
+            els.caseContent.innerHTML = contentHtml;
+
+            // Task instructions for current phase
+            els.taskInstructions.innerHTML =
+                '<h4>Case ' + (ci + 1) + ' of ' + CASES.length + ': ' + caseData.title + '</h4>' +
+                '<p>' + caseData.phases[pi].task + '</p>';
+
+            // Response form
+            renderResponseForm();
+
+            // Load chat history for this case+phase
+            loadChatHistory();
+
+            // Update buttons
+            updateButtons();
+            updateProgress();
+        }
+
+        function renderResponseForm() {
+            const ci = state.currentCase;
+            const pi = state.phases[ci];
+            const caseData = CASES[ci];
+            const saved = state.responses[ci].phases[pi] || {};
+            let html = '';
+
+            if (caseData.type === 'diagnostic') {
+                // Working notes at all phases
+                html += '<div class="response-section">' +
+                    '<label for="working-notes">Working Notes (your current thinking)</label>' +
+                    '<textarea id="working-notes" placeholder="What are you thinking at this stage? What stands out? What are your initial impressions?">' +
+                    escapeHtml(saved.workingNotes || '') + '</textarea></div>';
+
+                // Phase 3: JAMA Structured Reflection Grid
+                if (pi === 2) {
+                    html += '<div class="diagnostic-grid">';
+                    html += '<h4>Structured Diagnostic Reflection</h4>';
+
+                    const diffs = saved.diagnosticGrid ? saved.diagnosticGrid.differentials : [{}, {}, {}];
+
+                    for (let d = 0; d < 3; d++) {
+                        const diff = diffs[d] || {};
+                        html += '<div class="differential-row">' +
+                            '<div class="row-header">Differential #' + (d + 1) + '</div>' +
+                            '<div class="form-group"><label>Diagnosis</label>' +
+                            '<input type="text" class="diff-diagnosis" data-idx="' + d + '" value="' + escapeAttr(diff.diagnosis || '') + '" placeholder="Enter diagnosis"></div>' +
+                            '<div class="form-group"><label>Supporting Factors</label>' +
+                            '<textarea class="diff-supporting" data-idx="' + d + '" rows="2" placeholder="What supports this diagnosis?">' + escapeHtml(diff.supporting || '') + '</textarea></div>' +
+                            '<div class="form-group"><label>Opposing Factors</label>' +
+                            '<textarea class="diff-opposing" data-idx="' + d + '" rows="2" placeholder="What argues against this diagnosis?">' + escapeHtml(diff.opposing || '') + '</textarea></div>' +
+                            '</div>';
+                    }
+
+                    const grid = saved.diagnosticGrid || {};
+                    html += '<div class="response-section" style="margin-top:12px">' +
+                        '<label>Final / Most Likely Diagnosis</label>' +
+                        '<input type="text" id="final-diagnosis" value="' + escapeAttr(grid.finalDiagnosis || '') + '" placeholder="Your most likely diagnosis"></div>';
+
+                    html += '<div class="response-section">' +
+                        '<label>Next Diagnostic Steps</label>';
+                    const steps = grid.nextSteps || ['', '', ''];
+                    for (let s = 0; s < 3; s++) {
+                        html += '<input type="text" class="next-step" data-idx="' + s + '" value="' + escapeAttr(steps[s] || '') + '" placeholder="Step ' + (s + 1) + '" style="margin-bottom:6px">';
+                    }
+                    html += '</div>';
+
+                    html += '<div class="response-section"><label>Confidence Level</label><div class="confidence-group">';
+                    for (let c = 1; c <= 5; c++) {
+                        const checked = (grid.confidence == c) ? ' checked' : '';
+                        html += '<label class="radio-label"><input type="radio" name="confidence" value="' + c + '"' + checked + '> ' + c + '</label>';
+                    }
+                    html += '</div></div>';
+                    html += '</div>';
+                }
+            } else {
+                // Management cases
+                html += '<div class="response-section">' +
+                    '<label for="management-plan">Management Plan</label>' +
+                    '<textarea id="management-plan" placeholder="Outline your management plan...">' +
+                    escapeHtml(saved.managementPlan || '') + '</textarea></div>';
+
+                html += '<div class="response-section">' +
+                    '<label for="key-factors">Key Factors Influencing Your Plan</label>' +
+                    '<textarea id="key-factors" rows="3" placeholder="What factors are most important in this case?">' +
+                    escapeHtml(saved.keyFactors || '') + '</textarea></div>';
+
+                html += '<div class="response-section">' +
+                    '<label for="risks-concerns">Risks and Concerns</label>' +
+                    '<textarea id="risks-concerns" rows="3" placeholder="What risks or concerns should be monitored?">' +
+                    escapeHtml(saved.risksConcerns || '') + '</textarea></div>';
+
+                // Phase 3: patient communication
+                if (pi === 2) {
+                    html += '<div class="response-section">' +
+                        '<label for="patient-communication">Patient Communication Approach</label>' +
+                        '<textarea id="patient-communication" rows="3" placeholder="How would you communicate this plan to the patient?">' +
+                        escapeHtml(saved.patientCommunication || '') + '</textarea></div>';
+                }
+            }
+
+            els.responseFormContainer.innerHTML = html;
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function escapeAttr(str) {
+            return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function saveCurrentPhaseResponse() {
+            const ci = state.currentCase;
+            const pi = state.phases[ci];
+            const caseData = CASES[ci];
+            const data = {};
+
+            if (caseData.type === 'diagnostic') {
+                const notes = document.getElementById('working-notes');
+                data.workingNotes = notes ? notes.value : '';
+
+                if (pi === 2) {
+                    data.diagnosticGrid = {
+                        differentials: [],
+                        finalDiagnosis: '',
+                        nextSteps: [],
+                        confidence: null
+                    };
+
+                    document.querySelectorAll('.diff-diagnosis').forEach((el, idx) => {
+                        data.diagnosticGrid.differentials[idx] = {
+                            diagnosis: el.value,
+                            supporting: (document.querySelectorAll('.diff-supporting')[idx] || {}).value || '',
+                            opposing: (document.querySelectorAll('.diff-opposing')[idx] || {}).value || ''
+                        };
+                    });
+
+                    const fd = document.getElementById('final-diagnosis');
+                    data.diagnosticGrid.finalDiagnosis = fd ? fd.value : '';
+
+                    document.querySelectorAll('.next-step').forEach((el, idx) => {
+                        data.diagnosticGrid.nextSteps[idx] = el.value;
+                    });
+
+                    const checked = document.querySelector('input[name="confidence"]:checked');
+                    data.diagnosticGrid.confidence = checked ? parseInt(checked.value) : null;
+                }
+            } else {
+                const mp = document.getElementById('management-plan');
+                data.managementPlan = mp ? mp.value : '';
+                const kf = document.getElementById('key-factors');
+                data.keyFactors = kf ? kf.value : '';
+                const rc = document.getElementById('risks-concerns');
+                data.risksConcerns = rc ? rc.value : '';
+
+                if (pi === 2) {
+                    const pc = document.getElementById('patient-communication');
+                    data.patientCommunication = pc ? pc.value : '';
+                }
+            }
+
+            state.responses[ci].phases[pi] = data;
+        }
+
+        function hasResponseContent() {
+            const ci = state.currentCase;
+            const pi = state.phases[ci];
+            const caseData = CASES[ci];
+
+            if (caseData.type === 'diagnostic') {
+                const notes = document.getElementById('working-notes');
+                return notes && notes.value.trim().length > 0;
+            } else {
+                const mp = document.getElementById('management-plan');
+                return mp && mp.value.trim().length > 0;
+            }
+        }
+
+        // ============================================
+        // BUTTON LOGIC
+        // ============================================
+        function updateButtons() {
+            const ci = state.currentCase;
+            const pi = state.phases[ci];
+            const numCases = CASES.length;
+            const isLastCase = ci === numCases - 1;
+            const isLastPhase = pi === 2;
+            const isPhaseSubmitted = state.phaseSubmitted[ci][pi];
+
+            // Previous case button
+            els.prevCaseBtn.classList.toggle('hidden', ci === 0);
+
+            // Advance / submit phase button
+            if (isLastPhase && isPhaseSubmitted) {
+                els.advanceBtn.classList.add('hidden');
+            } else if (isPhaseSubmitted && pi < 2) {
+                els.advanceBtn.textContent = 'Advance to Phase ' + (pi + 2);
+                els.advanceBtn.classList.remove('hidden');
+            } else {
+                els.advanceBtn.textContent = 'Submit Phase ' + (pi + 1) + ' Response';
+                els.advanceBtn.classList.remove('hidden');
+            }
+
+            // Next case button (only at phase 3 and submitted)
+            if (isLastPhase && isPhaseSubmitted && !isLastCase) {
+                els.nextCaseBtn.classList.remove('hidden');
+            } else {
+                els.nextCaseBtn.classList.add('hidden');
+            }
+
+            // Finish button (last case, last phase, submitted)
+            if (isLastPhase && isPhaseSubmitted && isLastCase) {
+                els.finishBtn.classList.remove('hidden');
+            } else {
+                els.finishBtn.classList.add('hidden');
+            }
+        }
+
+        function handleAdvance() {
+            const ci = state.currentCase;
+            const pi = state.phases[ci];
+            const isPhaseSubmitted = state.phaseSubmitted[ci][pi];
+
+            if (!isPhaseSubmitted) {
+                // Submit current phase
+                if (!hasResponseContent()) {
+                    alert('Please enter a response before submitting this phase.');
+                    return;
+                }
+                saveCurrentPhaseResponse();
+                state.phaseSubmitted[ci][pi] = true;
+
+                if (pi === 2) {
+                    state.caseCompleted[ci] = true;
+                }
+
+                updateButtons();
+                updateSectionNav();
+                updateProgress();
+            } else if (pi < 2) {
+                // Advance to next phase
+                saveCurrentPhaseResponse();
+                state.phases[ci] = pi + 1;
+                renderPhase();
+            }
+        }
+
+        function handleNextCase() {
+            saveCurrentPhaseResponse();
+            if (state.currentCase < CASES.length - 1) {
+                loadCase(state.currentCase + 1);
+            }
+        }
+
+        function handlePrevCase() {
+            saveCurrentPhaseResponse();
+            if (state.currentCase > 0) {
+                loadCase(state.currentCase - 1);
+            }
+        }
+
+        // ============================================
+        // CHAT
+        // ============================================
+        function loadChatHistory() {
+            const ci = state.currentCase;
+            const pi = state.phases[ci];
+
+            els.chatMessages.innerHTML =
+                '<div class="message system">Use the AI assistant to help with this task. Your interaction will be recorded for review.</div>';
+
+            const history = state.chatHistories[ci][pi] || [];
+            history.forEach(msg => {
+                addMessageToChat(msg.role, msg.content, false);
+            });
+        }
+
         async function handleSendMessage() {
-            const message = elements.chatInput.value.trim();
+            const message = els.chatInput.value.trim();
             if (!message) return;
 
-            // Clear input and disable button
-            elements.chatInput.value = '';
-            elements.sendBtn.disabled = true;
+            els.chatInput.value = '';
+            els.sendBtn.disabled = true;
 
-            // Add user message to chat
             addMessageToChat('user', message);
             saveChatMessage('user', message);
 
-            // Show loading indicator
             const loadingId = addLoadingIndicator();
 
             try {
@@ -1832,131 +1726,101 @@ You had a heart attack. This means a blood vessel to your heart got blocked. The
                 console.error('AI Error:', error);
             }
 
-            elements.sendBtn.disabled = false;
-            elements.chatInput.focus();
+            els.sendBtn.disabled = false;
+            els.chatInput.focus();
         }
 
         function addMessageToChat(role, content, scroll = true) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${role}`;
-            messageDiv.innerHTML = formatMessage(content);
-            elements.chatMessages.appendChild(messageDiv);
-
+            const div = document.createElement('div');
+            div.className = 'message ' + role;
+            div.innerHTML = formatMessage(content);
+            els.chatMessages.appendChild(div);
             if (scroll) {
-                elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+                els.chatMessages.scrollTop = els.chatMessages.scrollHeight;
             }
         }
 
         function formatMessage(content) {
-            // Basic markdown-like formatting
             return content
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\n/g, '<br>');
         }
 
         function saveChatMessage(role, content) {
-            if (!state.responses[state.currentSection].chatHistory) {
-                state.responses[state.currentSection].chatHistory = [];
-            }
-            state.responses[state.currentSection].chatHistory.push({ role, content });
+            const ci = state.currentCase;
+            const pi = state.phases[ci];
+            state.chatHistories[ci][pi].push({ role, content });
         }
 
         function addLoadingIndicator() {
             const id = 'loading-' + Date.now();
-            const loadingDiv = document.createElement('div');
-            loadingDiv.id = id;
-            loadingDiv.className = 'message assistant';
-            loadingDiv.innerHTML = '<span class="loading"></span> Thinking...';
-            elements.chatMessages.appendChild(loadingDiv);
-            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'message assistant';
+            div.innerHTML = '<span class="loading"></span> Thinking...';
+            els.chatMessages.appendChild(div);
+            els.chatMessages.scrollTop = els.chatMessages.scrollHeight;
             return id;
         }
 
         function removeLoadingIndicator(id) {
-            const element = document.getElementById(id);
-            if (element) element.remove();
+            const el = document.getElementById(id);
+            if (el) el.remove();
         }
 
         async function getAIResponse(message) {
-            // If real API is configured, use it
             if (CONFIG.apiEndpoint && !CONFIG.useMockResponses) {
                 return await callRealAPI(message);
             }
-
-            // Otherwise, use mock responses
             return getMockResponse(message);
         }
 
         async function callRealAPI(message) {
-            const sectionContext = CASES[state.currentSection];
-            const chatHistory = state.responses[state.currentSection].chatHistory || [];
+            const ci = state.currentCase;
+            const pi = state.phases[ci];
+            const caseData = CASES[ci];
+            const chatHistory = state.chatHistories[ci][pi] || [];
+
+            const systemPrompt = 'You are a medical AI assistant in a clinical decision support role. You are helping a healthcare professional work through a clinical case.\n\n' +
+                'IMPORTANT GUIDELINES:\n' +
+                '- Do NOT provide a complete differential diagnosis list or management plan unprompted\n' +
+                '- Instead, respond specifically to what the user asks\n' +
+                '- If the user pastes a large block of clinical data without a specific question, respond: "I can see the clinical information. What specific aspects would you like me to help you think through?"\n' +
+                '- Ask clarifying questions to understand what the user is trying to work out\n' +
+                '- When asked about a specific finding or symptom, provide focused, relevant information\n' +
+                '- Encourage the user to think through their reasoning rather than giving them the answer\n' +
+                '- You can provide medical knowledge, reference guidelines, and discuss differential considerations when specifically asked\n\n' +
+                'Current case context: ' + caseData.title + '\n' +
+                'Case type: ' + caseData.type + '\n' +
+                'Current phase: ' + (pi + 1) + '/3';
 
             const response = await fetch(CONFIG.apiEndpoint, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     messages: [
-                        {
-                            role: 'system',
-                            content: `You are a medical AI assistant helping a healthcare professional with a clinical task.
-
-Current task: ${sectionContext.title}
-Task description: ${sectionContext.taskDescription}
-
-Provide helpful, accurate medical information. Be concise but thorough. If you're unsure about something, say so.`
-                        },
-                        ...chatHistory.map(msg => ({
-                            role: msg.role,
-                            content: msg.content
-                        })),
-                        {
-                            role: 'user',
-                            content: message
-                        }
+                        { role: 'system', content: systemPrompt },
+                        ...chatHistory.map(msg => ({ role: msg.role, content: msg.content })),
+                        { role: 'user', content: message }
                     ]
                 })
             });
 
-            if (!response.ok) {
-                throw new Error('API request failed');
-            }
-
+            if (!response.ok) throw new Error('API request failed');
             const data = await response.json();
             return data.content || data.message || data.choices?.[0]?.message?.content;
         }
 
         function getMockResponse(message) {
-            // Simulate API delay
             return new Promise((resolve) => {
                 setTimeout(() => {
-                    const section = state.currentSection;
-                    const responses = [
-                        MOCK_RESPONSES.diagnostic,
-                        MOCK_RESPONSES.management,
-                        MOCK_RESPONSES.errors,
-                        MOCK_RESPONSES.summarization,
-                        MOCK_RESPONSES.patient
-                    ];
-
-                    // For demo, return the prepared response if it's the first message
-                    // Otherwise return a generic helpful response
-                    const chatHistory = state.responses[section].chatHistory || [];
-                    if (chatHistory.length <= 1) {
-                        resolve(responses[section]);
-                    } else {
-                        resolve(`Based on your question about "${message.substring(0, 50)}...", I can provide additional clarification.
-
-The key points to consider are:
-1. Review the clinical data carefully
-2. Consider the patient's specific context
-3. Apply evidence-based guidelines
-4. Document your reasoning clearly
-
-Is there a specific aspect you'd like me to elaborate on?`);
-                    }
-                }, 1000 + Math.random() * 1000);
+                    resolve('I can see the clinical information you are working with. What specific aspects would you like me to help you think through? I can help with:\n\n' +
+                        '- Interpreting specific findings\n' +
+                        '- Discussing differential diagnoses you are considering\n' +
+                        '- Reviewing relevant guidelines\n' +
+                        '- Thinking through next steps\n\n' +
+                        'What would be most helpful right now?');
+                }, 800 + Math.random() * 800);
             });
         }
 
@@ -1964,10 +1828,9 @@ Is there a specific aspect you'd like me to elaborate on?`);
         // FINISH AND RESULTS
         // ============================================
         function handleFinish() {
-            saveCurrentResponse();
+            saveCurrentPhaseResponse();
             clearInterval(state.timerInterval);
             state.endTime = new Date();
-
             submitSessionLog();
             showResults();
         }
@@ -1977,17 +1840,43 @@ Is there a specific aspect you'd like me to elaborate on?`);
 
             try {
                 const timeTaken = CONFIG.totalTime - state.timeRemaining;
-                const completed = state.responses.filter(r => r.response).length;
+                const completed = state.caseCompleted.filter(Boolean).length;
 
                 const payload = {
                     participant: state.participant,
                     timeTaken: timeTaken,
-                    sectionsCompleted: completed + '/5',
+                    sectionsCompleted: completed + '/' + CASES.length,
                     totalAiInteractions: state.totalAiInteractions,
-                    responses: state.responses.map(r => ({
-                        response: r.response || '',
-                        chatHistory: r.chatHistory || []
-                    })),
+                    responses: CASES.map((c, ci) => {
+                        const caseResponse = {
+                            caseType: c.type,
+                            phases: []
+                        };
+
+                        for (let pi = 0; pi < 3; pi++) {
+                            const phaseData = state.responses[ci].phases[pi] || {};
+                            const phaseEntry = {
+                                phase: pi + 1,
+                                chatHistory: state.chatHistories[ci][pi] || []
+                            };
+
+                            if (c.type === 'diagnostic') {
+                                phaseEntry.workingNotes = phaseData.workingNotes || '';
+                                phaseEntry.diagnosticGrid = pi === 2 ? (phaseData.diagnosticGrid || null) : null;
+                            } else {
+                                phaseEntry.managementPlan = phaseData.managementPlan || '';
+                                phaseEntry.keyFactors = phaseData.keyFactors || '';
+                                phaseEntry.risksConcerns = phaseData.risksConcerns || '';
+                                if (pi === 2) {
+                                    phaseEntry.patientCommunication = phaseData.patientCommunication || '';
+                                }
+                            }
+
+                            caseResponse.phases.push(phaseEntry);
+                        }
+
+                        return caseResponse;
+                    }),
                     cases: CASES.map(c => c.title)
                 };
 
@@ -1998,50 +1887,97 @@ Is there a specific aspect you'd like me to elaborate on?`);
                     mode: 'no-cors'
                 }).catch(function() {});
             } catch (e) {
-                // Silent fail — logging should never block the user experience
+                // Silent fail
             }
         }
 
         function showResults() {
-            elements.assessmentPage.classList.add('hidden');
-            elements.resultsPage.classList.remove('hidden');
+            els.assessmentPage.classList.add('hidden');
+            els.resultsPage.classList.remove('hidden');
 
             // Participant info
             document.getElementById('results-participant-info').textContent =
-                `${state.participant.name} | ${state.participant.role} - ${state.participant.specialty} | ${new Date().toLocaleDateString()}`;
+                (state.participant.name || 'Anonymous') + ' | ' +
+                (state.participant.role || 'N/A') + ' - ' +
+                (state.participant.specialty || 'N/A') + ' | ' +
+                new Date().toLocaleDateString();
 
             // Time taken
             const timeTaken = CONFIG.totalTime - state.timeRemaining;
             const minutes = Math.floor(timeTaken / 60);
             const seconds = timeTaken % 60;
-            document.getElementById('time-taken').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('time-taken').textContent = minutes + ':' + seconds.toString().padStart(2, '0');
 
-            // Sections completed
-            const completed = state.responses.filter(r => r.response).length;
-            document.getElementById('sections-completed').textContent = `${completed}/5`;
+            // Cases completed
+            const completed = state.caseCompleted.filter(Boolean).length;
+            document.getElementById('sections-completed').textContent = completed + '/' + CASES.length;
 
             // AI interactions
             document.getElementById('ai-interactions').textContent = state.totalAiInteractions;
 
-            // Section details
+            // Phases completed
+            let phasesCompleted = 0;
+            state.phaseSubmitted.forEach(cp => cp.forEach(s => { if (s) phasesCompleted++; }));
+            document.getElementById('phases-completed').textContent = phasesCompleted;
+
+            // Detailed results
             const resultsContainer = document.getElementById('section-results');
             resultsContainer.innerHTML = '';
 
-            CASES.forEach((caseData, index) => {
-                const response = state.responses[index];
-                const chatCount = (response.chatHistory || []).filter(m => m.role === 'user').length;
-
+            CASES.forEach((caseData, ci) => {
                 const sectionDiv = document.createElement('div');
                 sectionDiv.className = 'section-result';
-                sectionDiv.innerHTML = `
-                    <h4>
-                        ${response.response ? '✅' : '⚠️'} Section ${index + 1}: ${caseData.title}
-                        <span style="font-weight: normal; color: var(--gray-600); font-size: 0.85rem; margin-left: auto;">
-                            (${chatCount} AI queries)
-                        </span>
-                    </h4>
-                    <div class="response-display">${response.response || 'No response provided'}</div>
-                `;
+
+                const typeBadge = caseData.type === 'diagnostic' ? 'Diagnostic' : 'Management';
+                const statusIcon = state.caseCompleted[ci] ? '\u2705' : '\u26a0\ufe0f';
+
+                let innerHtml = '<h4>' + statusIcon + ' Case ' + (ci + 1) + ': ' + caseData.title +
+                    ' <span style="font-weight:normal;color:var(--gray-600);font-size:0.85rem;margin-left:auto;">(' + typeBadge + ')</span></h4>';
+
+                for (let pi = 0; pi < 3; pi++) {
+                    const pd = state.responses[ci].phases[pi] || {};
+                    const chatCount = (state.chatHistories[ci][pi] || []).filter(m => m.role === 'user').length;
+
+                    innerHtml += '<div class="phase-block"><h5>Phase ' + (pi + 1) +
+                        ' <span style="font-weight:normal;color:var(--gray-600);">(' + chatCount + ' AI queries)</span></h5>';
+
+                    if (caseData.type === 'diagnostic') {
+                        innerHtml += '<div class="response-display">' + escapeHtml(pd.workingNotes || 'No response') + '</div>';
+
+                        if (pi === 2 && pd.diagnosticGrid) {
+                            const grid = pd.diagnosticGrid;
+                            innerHtml += '<div style="margin-top:8px;padding:12px;background:#eff6ff;border-radius:6px;font-size:0.85rem;">';
+                            innerHtml += '<strong>Structured Reflection Grid:</strong><br>';
+                            (grid.differentials || []).forEach((d, idx) => {
+                                if (d.diagnosis) {
+                                    innerHtml += '<br><em>Differential #' + (idx + 1) + ':</em> ' + escapeHtml(d.diagnosis);
+                                    if (d.supporting) innerHtml += '<br>&nbsp;&nbsp;Supporting: ' + escapeHtml(d.supporting);
+                                    if (d.opposing) innerHtml += '<br>&nbsp;&nbsp;Opposing: ' + escapeHtml(d.opposing);
+                                }
+                            });
+                            if (grid.finalDiagnosis) innerHtml += '<br><br><strong>Final Diagnosis:</strong> ' + escapeHtml(grid.finalDiagnosis);
+                            if (grid.nextSteps && grid.nextSteps.some(s => s)) {
+                                innerHtml += '<br><strong>Next Steps:</strong> ' + grid.nextSteps.filter(s => s).map(s => escapeHtml(s)).join(', ');
+                            }
+                            if (grid.confidence) innerHtml += '<br><strong>Confidence:</strong> ' + grid.confidence + '/5';
+                            innerHtml += '</div>';
+                        }
+                    } else {
+                        innerHtml += '<div class="response-display">' + escapeHtml(pd.managementPlan || 'No response') + '</div>';
+                        if (pd.keyFactors) {
+                            innerHtml += '<div class="response-display" style="margin-top:4px"><em>Key Factors:</em> ' + escapeHtml(pd.keyFactors) + '</div>';
+                        }
+                        if (pd.risksConcerns) {
+                            innerHtml += '<div class="response-display" style="margin-top:4px"><em>Risks:</em> ' + escapeHtml(pd.risksConcerns) + '</div>';
+                        }
+                        if (pi === 2 && pd.patientCommunication) {
+                            innerHtml += '<div class="response-display" style="margin-top:4px"><em>Patient Communication:</em> ' + escapeHtml(pd.patientCommunication) + '</div>';
+                        }
+                    }
+                    innerHtml += '</div>';
+                }
+
+                sectionDiv.innerHTML = innerHtml;
                 resultsContainer.appendChild(sectionDiv);
             });
         }
@@ -2058,6 +1994,27 @@ Is there a specific aspect you'd like me to elaborate on?`);
             const contentWidth = pageWidth - 2 * margin;
             let y = margin;
 
+            function checkPage(needed) {
+                if (y + needed > 280) {
+                    doc.addPage();
+                    y = margin;
+                }
+            }
+
+            function addText(text, opts = {}) {
+                const fontSize = opts.fontSize || 10;
+                const isBold = opts.bold || false;
+                doc.setFontSize(fontSize);
+                doc.setFont(undefined, isBold ? 'bold' : 'normal');
+                const lines = doc.splitTextToSize(text, contentWidth);
+                lines.forEach(line => {
+                    checkPage(6);
+                    doc.text(line, margin, y);
+                    y += fontSize * 0.5;
+                });
+                y += 2;
+            }
+
             // Title
             doc.setFontSize(18);
             doc.setFont(undefined, 'bold');
@@ -2065,114 +2022,92 @@ Is there a specific aspect you'd like me to elaborate on?`);
             y += 12;
 
             // Participant info
-            doc.setFontSize(10);
-            doc.setFont(undefined, 'normal');
-            doc.text(`Participant: ${state.participant.name}`, margin, y);
+            addText('Participant: ' + (state.participant.name || 'Anonymous'));
+            addText('Email: ' + (state.participant.email || 'N/A'));
+            addText('Role: ' + (state.participant.role || 'N/A') + ' - ' + (state.participant.specialty || 'N/A'));
+            addText('Date: ' + new Date(state.participant.date).toLocaleString());
             y += 5;
-            doc.text(`Email: ${state.participant.email}`, margin, y);
-            y += 5;
-            doc.text(`Role: ${state.participant.role} - ${state.participant.specialty}`, margin, y);
-            y += 5;
-            doc.text(`Date: ${new Date(state.participant.date).toLocaleString()}`, margin, y);
-            y += 10;
 
             // Summary
             const timeTaken = CONFIG.totalTime - state.timeRemaining;
-            const minutes = Math.floor(timeTaken / 60);
-            const seconds = timeTaken % 60;
-            const completed = state.responses.filter(r => r.response).length;
+            const mins = Math.floor(timeTaken / 60);
+            const secs = timeTaken % 60;
+            const completed = state.caseCompleted.filter(Boolean).length;
+            let phasesCompleted = 0;
+            state.phaseSubmitted.forEach(cp => cp.forEach(s => { if (s) phasesCompleted++; }));
 
-            doc.setFontSize(12);
-            doc.setFont(undefined, 'bold');
-            doc.text('Assessment Summary', margin, y);
-            y += 7;
+            addText('Assessment Summary', { fontSize: 12, bold: true });
+            addText('Time Taken: ' + mins + ':' + secs.toString().padStart(2, '0'));
+            addText('Cases Completed: ' + completed + '/' + CASES.length);
+            addText('Total AI Interactions: ' + state.totalAiInteractions);
+            addText('Phases Completed: ' + phasesCompleted + '/' + (CASES.length * 3));
+            y += 8;
 
-            doc.setFontSize(10);
-            doc.setFont(undefined, 'normal');
-            doc.text(`Time Taken: ${minutes}:${seconds.toString().padStart(2, '0')}`, margin, y);
-            y += 5;
-            doc.text(`Sections Completed: ${completed}/5`, margin, y);
-            y += 5;
-            doc.text(`Total AI Interactions: ${state.totalAiInteractions}`, margin, y);
-            y += 12;
+            // Each case
+            CASES.forEach((caseData, ci) => {
+                checkPage(20);
+                addText('Case ' + (ci + 1) + ': ' + caseData.title + ' (' + caseData.type + ')', { fontSize: 12, bold: true });
 
-            // Each section
-            CASES.forEach((caseData, index) => {
-                // Check if we need a new page
-                if (y > 250) {
-                    doc.addPage();
-                    y = margin;
-                }
+                for (let pi = 0; pi < 3; pi++) {
+                    const pd = state.responses[ci].phases[pi] || {};
+                    const chatHistory = state.chatHistories[ci][pi] || [];
 
-                const response = state.responses[index];
-                const chatHistory = response.chatHistory || [];
+                    checkPage(15);
+                    addText('Phase ' + (pi + 1), { fontSize: 11, bold: true });
 
-                // Section header
-                doc.setFontSize(12);
-                doc.setFont(undefined, 'bold');
-                doc.text(`Section ${index + 1}: ${caseData.title}`, margin, y);
-                y += 7;
+                    if (caseData.type === 'diagnostic') {
+                        addText('Working Notes:', { bold: true });
+                        addText(pd.workingNotes || 'No response provided');
 
-                // Response
-                doc.setFontSize(10);
-                doc.setFont(undefined, 'bold');
-                doc.text('Participant Response:', margin, y);
-                y += 5;
-
-                doc.setFont(undefined, 'normal');
-                const responseText = response.response || 'No response provided';
-                const splitResponse = doc.splitTextToSize(responseText, contentWidth);
-
-                splitResponse.forEach(line => {
-                    if (y > 280) {
-                        doc.addPage();
-                        y = margin;
-                    }
-                    doc.text(line, margin, y);
-                    y += 5;
-                });
-                y += 5;
-
-                // AI Chat Log
-                if (chatHistory.length > 0) {
-                    doc.setFont(undefined, 'bold');
-                    doc.text('AI Interaction Log:', margin, y);
-                    y += 5;
-
-                    doc.setFont(undefined, 'normal');
-                    chatHistory.forEach(msg => {
-                        if (y > 280) {
-                            doc.addPage();
-                            y = margin;
+                        if (pi === 2 && pd.diagnosticGrid) {
+                            const grid = pd.diagnosticGrid;
+                            addText('Diagnostic Reflection Grid:', { bold: true });
+                            (grid.differentials || []).forEach((d, idx) => {
+                                if (d.diagnosis) {
+                                    addText('  Differential #' + (idx + 1) + ': ' + d.diagnosis);
+                                    if (d.supporting) addText('    Supporting: ' + d.supporting);
+                                    if (d.opposing) addText('    Opposing: ' + d.opposing);
+                                }
+                            });
+                            if (grid.finalDiagnosis) addText('Final Diagnosis: ' + grid.finalDiagnosis, { bold: true });
+                            if (grid.nextSteps) addText('Next Steps: ' + grid.nextSteps.filter(s => s).join(', '));
+                            if (grid.confidence) addText('Confidence: ' + grid.confidence + '/5');
                         }
+                    } else {
+                        addText('Management Plan:', { bold: true });
+                        addText(pd.managementPlan || 'No response provided');
+                        if (pd.keyFactors) { addText('Key Factors:', { bold: true }); addText(pd.keyFactors); }
+                        if (pd.risksConcerns) { addText('Risks/Concerns:', { bold: true }); addText(pd.risksConcerns); }
+                        if (pi === 2 && pd.patientCommunication) {
+                            addText('Patient Communication:', { bold: true });
+                            addText(pd.patientCommunication);
+                        }
+                    }
 
-                        const prefix = msg.role === 'user' ? 'User: ' : 'AI: ';
-                        const text = prefix + msg.content.substring(0, 200) + (msg.content.length > 200 ? '...' : '');
-                        const splitText = doc.splitTextToSize(text, contentWidth);
-
-                        splitText.forEach(line => {
-                            if (y > 280) {
-                                doc.addPage();
-                                y = margin;
-                            }
-                            doc.text(line, margin, y);
-                            y += 4;
+                    // Chat log
+                    if (chatHistory.length > 0) {
+                        addText('AI Chat Log (' + chatHistory.filter(m => m.role === 'user').length + ' queries):', { bold: true });
+                        chatHistory.forEach(msg => {
+                            const prefix = msg.role === 'user' ? 'User: ' : 'AI: ';
+                            const text = prefix + msg.content.substring(0, 200) + (msg.content.length > 200 ? '...' : '');
+                            addText(text);
                         });
-                        y += 2;
-                    });
+                    }
+
+                    y += 4;
                 }
 
-                y += 10;
+                y += 8;
             });
 
-            // Footer on each page
+            // Footer
             const pageCount = doc.internal.getNumberOfPages();
             for (let i = 1; i <= pageCount; i++) {
                 doc.setPage(i);
                 doc.setFontSize(8);
                 doc.setTextColor(128);
                 doc.text(
-                    `Page ${i} of ${pageCount} | Generated: ${new Date().toLocaleString()}`,
+                    'Page ' + i + ' of ' + pageCount + ' | Generated: ' + new Date().toLocaleString(),
                     pageWidth / 2,
                     doc.internal.pageSize.getHeight() - 10,
                     { align: 'center' }
@@ -2180,12 +2115,13 @@ Is there a specific aspect you'd like me to elaborate on?`);
                 doc.setTextColor(0);
             }
 
-            // Save the PDF
-            const filename = `AI_Competency_Assessment_${state.participant.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+            const filename = 'AI_Competency_Assessment_' +
+                (state.participant.name || 'Anonymous').replace(/\s+/g, '_') + '_' +
+                new Date().toISOString().split('T')[0] + '.pdf';
             doc.save(filename);
         }
 
-        // Initialize the application
+        // Initialize
         init();
     </script>
 </body>
