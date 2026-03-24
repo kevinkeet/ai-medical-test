@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fluency Analysis — Medical AI Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #dbeafe;
+            --green: #059669;
+            --green-light: #d1fae5;
+            --amber: #d97706;
+            --amber-light: #fef3c7;
+            --red: #dc2626;
+            --red-light: #fee2e2;
+            --purple: #7c3aed;
+            --purple-light: #ede9fe;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+        .header {
+            background: white;
+            padding: 24px 32px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        .header h1 { font-size: 1.5rem; color: var(--gray-900); }
+        .header p { color: var(--gray-600); margin-top: 4px; }
+
+        .setup-panel {
+            background: white;
+            padding: 24px 32px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        .setup-panel label { font-weight: 600; display: block; margin-bottom: 6px; }
+        .setup-panel input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+        .setup-panel .hint { font-size: 0.85rem; color: var(--gray-500); margin-top: -8px; margin-bottom: 12px; }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-primary:disabled { background: var(--gray-300); cursor: not-allowed; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .stat-card .label { font-size: 0.85rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-card .value { font-size: 2rem; font-weight: 700; margin-top: 4px; }
+
+        .card {
+            background: white;
+            padding: 24px 32px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        .card h2 { font-size: 1.2rem; margin-bottom: 16px; }
+        .card h3 { font-size: 1rem; margin-bottom: 12px; color: var(--gray-700); }
+
+        .chart-container { position: relative; width: 100%; max-height: 400px; }
+
+        .behavior-list { list-style: none; }
+        .behavior-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .behavior-item:last-child { border-bottom: none; }
+        .behavior-bar-container { flex: 1; height: 28px; background: var(--gray-100); border-radius: 6px; overflow: hidden; }
+        .behavior-bar {
+            height: 100%;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            min-width: 40px;
+            transition: width 0.6s ease;
+        }
+        .behavior-name { width: 220px; font-size: 0.9rem; flex-shrink: 0; }
+        .behavior-pct { width: 50px; text-align: right; font-weight: 600; font-size: 0.9rem; flex-shrink: 0; }
+
+        .competency-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .tag-describe { background: var(--primary-light); color: var(--primary); }
+        .tag-delegate { background: var(--green-light); color: var(--green); }
+        .tag-discern { background: var(--amber-light); color: var(--amber); }
+        .tag-direct { background: var(--purple-light); color: var(--purple); }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+        .session-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .session-table th, .session-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .session-table th { font-weight: 600; color: var(--gray-600); font-size: 0.8rem; text-transform: uppercase; }
+        .session-table tr:hover { background: var(--gray-50); }
+
+        .hidden { display: none; }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px; height: 20px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-500);
+        }
+        .empty-state h3 { font-size: 1.1rem; color: var(--gray-700); margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI Fluency Analysis</h1>
+            <p>Analyzing user interactions with the Medical AI Competency Assessment — inspired by the Anthropic AI Fluency Index</p>
+        </div>
+
+        <!-- Setup -->
+        <div class="setup-panel" id="setup-panel">
+            <label for="endpoint-input">Google Apps Script Web App URL</label>
+            <input type="url" id="endpoint-input" placeholder="https://script.google.com/macros/s/.../exec">
+            <p class="hint">The deployed Apps Script URL that serves your session log data. Append ?action=getAllData.</p>
+            <button class="btn btn-primary" id="load-btn" onclick="loadData()">Load Data</button>
+        </div>
+
+        <!-- Loading -->
+        <div class="card hidden" id="loading-card">
+            <p><span class="loading-spinner"></span> Loading and analyzing session data...</p>
+        </div>
+
+        <!-- Dashboard (hidden until data loads) -->
+        <div id="dashboard" class="hidden">
+
+            <!-- Summary Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">Total Sessions</div>
+                    <div class="value" id="stat-sessions">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Total Messages</div>
+                    <div class="value" id="stat-messages">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Avg AI Queries / Session</div>
+                    <div class="value" id="stat-avg-queries">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Avg Time (min)</div>
+                    <div class="value" id="stat-avg-time">0</div>
+                </div>
+            </div>
+
+            <!-- AI Fluency Behavioral Indicators -->
+            <div class="card">
+                <h2>AI Fluency Behavioral Indicators</h2>
+                <p style="color: var(--gray-500); margin-bottom: 16px; font-size: 0.9rem;">
+                    Prevalence of each behavioral indicator across all sessions, ranked from most to least common.
+                </p>
+                <ul class="behavior-list" id="behavior-list"></ul>
+            </div>
+
+            <div class="two-col">
+                <!-- Fluency by Competency -->
+                <div class="card">
+                    <h2>Behaviors by Competency</h2>
+                    <div class="chart-container">
+                        <canvas id="competency-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Iteration vs Non-iteration -->
+                <div class="card">
+                    <h2>Iterative vs Non-Iterative Sessions</h2>
+                    <p style="color: var(--gray-500); margin-bottom: 12px; font-size: 0.85rem;">
+                        Sessions with iteration and refinement show higher rates of all other fluency behaviors.
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="iteration-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fluency over time -->
+            <div class="card">
+                <h2>Fluency Trends Over Time</h2>
+                <div class="chart-container">
+                    <canvas id="trend-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Session Details Table -->
+            <div class="card">
+                <h2>Session Details</h2>
+                <div style="overflow-x: auto;">
+                    <table class="session-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Participant</th>
+                                <th>Role</th>
+                                <th>Time</th>
+                                <th>Sections</th>
+                                <th>AI Queries</th>
+                                <th>Fluency Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="session-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty state -->
+        <div id="empty-state" class="card hidden">
+            <div class="empty-state">
+                <h3>No session data yet</h3>
+                <p>Sessions will appear here once users complete the Medical AI Competency Assessment.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ============================================
+    // AI FLUENCY BEHAVIORAL INDICATORS
+    // Based on the 4D AI Fluency Framework
+    // ============================================
+    const BEHAVIORS = [
+        {
+            id: 'iteration',
+            name: 'Iteration & Refinement',
+            competency: 'delegate',
+            description: 'Building on previous exchanges to refine work',
+            classify: function(session) {
+                // Session shows iteration if user sends >1 message in any case
+                return session.cases.some(function(c) {
+                    var userMsgs = c.messages.filter(function(m) { return m.role === 'user'; });
+                    return userMsgs.length > 1;
+                });
+            }
+        },
+        {
+            id: 'clarify_goal',
+            name: 'Clarifying Goals',
+            competency: 'describe',
+            description: 'User states what they want to achieve',
+            classify: function(session) {
+                var patterns = [
+                    /i (?:want|need|would like|am trying|am looking) to/i,
+                    /(?:my |the )?goal is/i,
+                    /help me (?:with|to|understand|figure|determine|create|write|build)/i,
+                    /i(?:'m| am) (?:trying|working on|looking for)/i,
+                    /can you (?:help|assist|explain|tell|show)/i,
+                    /what (?:is|are|should|would|could)/i,
+                    /how (?:do|should|would|can|could) (?:i|we)/i
+                ];
+                return hasPattern(session, patterns, 'user');
+            }
+        },
+        {
+            id: 'specify_format',
+            name: 'Specifying Format',
+            competency: 'describe',
+            description: 'User requests specific output format',
+            classify: function(session) {
+                var patterns = [
+                    /(?:in |as a )?(?:list|table|bullet|step.by.step|format|summary|brief|concise|detailed)/i,
+                    /(?:give|provide|present|organize|structure) (?:it |this |them )?(?:as|in|like)/i,
+                    /(?:number|rank|prioritize|order|sort)/i,
+                    /keep it (?:short|brief|simple|concise)/i
+                ];
+                return hasPattern(session, patterns, 'user');
+            }
+        },
+        {
+            id: 'provide_examples',
+            name: 'Providing Examples',
+            competency: 'describe',
+            description: 'User gives examples of desired output',
+            classify: function(session) {
+                var patterns = [
+                    /for example/i,
+                    /such as/i,
+                    /like (?:this|when|if)/i,
+                    /e\.g\./i,
+                    /for instance/i,
+                    /here(?:'s| is) (?:an |a |my |the )?example/i,
+                    /similar to/i
+                ];
+                return hasPattern(session, patterns, 'user');
+            }
+        },
+        {
+            id: 'provide_context',
+            name: 'Providing Context',
+            competency: 'describe',
+            description: 'User shares relevant background info',
+            classify: function(session) {
+                var patterns = [
+                    /(?:the patient|this patient|patient has|patient is|patient was|patient presents)/i,
+                    /(?:history of|background|context|relevant|previously|prior to)/i,
+                    /(?:based on|given that|considering|taking into account|in light of)/i,
+                    /(?:the lab|the results|the imaging|the vitals|the chart)/i,
+                    /(?:i noticed|i see|i found|looking at|according to)/i
+                ];
+                return hasPattern(session, patterns, 'user');
+            }
+        },
+        {
+            id: 'set_interaction',
+            name: 'Setting Interaction Terms',
+            competency: 'direct',
+            description: 'User tells AI how to interact with them',
+            classify: function(session) {
+                var patterns = [
+                    /(?:act as|be |pretend|role|you are|you should be|behave) (?:a |an |like |as )?/i,
+                    /(?:don't|do not|please don't|stop) (?:give|provide|include|mention|use)/i,
+                    /(?:push back|challenge|question|disagree|be critical|be honest)/i,
+                    /(?:walk me through|explain your|show your|step by step)/i,
+                    /(?:focus on|only (?:give|provide|include)|limit (?:to|your))/i,
+                    /(?:assume|suppose|imagine|let's say)/i
+                ];
+                return hasPattern(session, patterns, 'user');
+            }
+        },
+        {
+            id: 'identify_missing',
+            name: 'Identifying Missing Context',
+            competency: 'discern',
+            description: 'User notices gaps in AI response',
+            classify: function(session) {
+                var patterns = [
+                    /(?:you (?:didn't|did not|haven't|forgot|missed|left out|overlooked|omitted))/i,
+                    /(?:what about|how about|but what if|you(?:'re| are) missing|you(?:'re| are) forgetting)/i,
+                    /(?:also consider|don't forget|keep in mind|important to note)/i,
+                    /(?:incomplete|not enough|need more|missing|lacking)/i,
+                    /(?:anything else|is there more|what else)/i
+                ];
+                return hasPattern(session, patterns, 'user');
+            }
+        },
+        {
+            id: 'question_reasoning',
+            name: 'Questioning Reasoning',
+            competency: 'discern',
+            description: 'User asks AI to explain its rationale',
+            classify: function(session) {
+                var patterns = [
+                    /(?:why (?:did you|do you|would you|is that|are you))/i,
+                    /(?:explain (?:your|why|how|the) (?:reasoning|rationale|logic|thinking))/i,
+                    /(?:how did you (?:come|arrive|reach|decide|determine))/i,
+                    /(?:what(?:'s| is) (?:your|the) (?:reasoning|rationale|basis|evidence))/i,
+                    /(?:are you sure|is that (?:right|correct|accurate)|i(?:'m| am) not sure (?:that|about|if))/i,
+                    /(?:can you justify|support (?:that|this)|what evidence)/i
+                ];
+                return hasPattern(session, patterns, 'user');
+            }
+        },
+        {
+            id: 'check_facts',
+            name: 'Checking Facts',
+            competency: 'discern',
+            description: 'User verifies AI claims',
+            classify: function(session) {
+                var patterns = [
+                    /(?:is (?:that|this|it) (?:true|correct|accurate|right|verified))/i,
+                    /(?:source|reference|citation|evidence|guideline|study|research)/i,
+                    /(?:according to|based on what|where did you get)/i,
+                    /(?:i(?:'ve| have) (?:read|heard|seen|learned) (?:that|differently))/i,
+                    /(?:actually|that(?:'s| is) (?:not|in)correct|that(?:'s| is) wrong)/i,
+                    /(?:double.check|verify|confirm|validate)/i
+                ];
+                return hasPattern(session, patterns, 'user');
+            }
+        },
+        {
+            id: 'evaluate_appropriateness',
+            name: 'Evaluating Appropriateness',
+            competency: 'discern',
+            description: 'User assesses if response fits the task',
+            classify: function(session) {
+                var patterns = [
+                    /(?:that(?:'s| is) (?:not quite|not exactly|not what|too|overly))/i,
+                    /(?:more (?:specific|relevant|appropriate|practical|useful|applicable))/i,
+                    /(?:less (?:generic|vague|broad|general|abstract))/i,
+                    /(?:this (?:doesn't|does not) (?:apply|fit|work|make sense|help))/i,
+                    /(?:not (?:relevant|applicable|appropriate|useful|helpful) (?:to|for|in|here))/i,
+                    /(?:tailor|adapt|adjust|customize|modify) (?:this|your|the|it)/i
+                ];
+                return hasPattern(session, patterns, 'user');
+            }
+        },
+        {
+            id: 'direct_role',
+            name: 'Directing AI Role',
+            competency: 'direct',
+            description: 'User assigns AI a specific role or persona',
+            classify: function(session) {
+                var patterns = [
+                    /(?:act (?:as|like) (?:a |an |my )?(?:doctor|nurse|specialist|consultant|expert|tutor|teacher|advisor))/i,
+                    /(?:you(?:'re| are) (?:a |an |my )?(?:doctor|nurse|specialist|consultant|expert))/i,
+                    /(?:pretend|imagine|suppose) you(?:'re| are)/i,
+                    /(?:in your (?:role|capacity|position) as)/i,
+                    /(?:as (?:a |an )?(?:medical|clinical|healthcare) (?:professional|expert|specialist))/i
+                ];
+                return hasPattern(session, patterns, 'user');
+            }
+        }
+    ];
+
+    function hasPattern(session, patterns, role) {
+        return session.cases.some(function(c) {
+            return c.messages
+                .filter(function(m) { return m.role === role; })
+                .some(function(m) {
+                    return patterns.some(function(p) { return p.test(m.content); });
+                });
+        });
+    }
+
+    // ============================================
+    // COMPETENCY COLORS
+    // ============================================
+    const COMPETENCY_COLORS = {
+        describe: { bg: 'rgba(37, 99, 235, 0.8)', light: 'rgba(37, 99, 235, 0.15)', label: 'Describe' },
+        delegate: { bg: 'rgba(5, 150, 105, 0.8)', light: 'rgba(5, 150, 105, 0.15)', label: 'Delegate' },
+        discern:  { bg: 'rgba(217, 119, 6, 0.8)', light: 'rgba(217, 119, 6, 0.15)', label: 'Discern' },
+        direct:   { bg: 'rgba(124, 58, 237, 0.8)', light: 'rgba(124, 58, 237, 0.15)', label: 'Direct' }
+    };
+
+    // ============================================
+    // DATA LOADING
+    // ============================================
+    let allSessions = [];
+    let allMessages = [];
+    let analyzedSessions = [];
+
+    async function loadData() {
+        const endpoint = document.getElementById('endpoint-input').value.trim();
+        if (!endpoint) { alert('Please enter your Apps Script URL'); return; }
+
+        document.getElementById('load-btn').disabled = true;
+        document.getElementById('loading-card').classList.remove('hidden');
+        document.getElementById('dashboard').classList.add('hidden');
+        document.getElementById('empty-state').classList.add('hidden');
+
+        try {
+            const url = endpoint + (endpoint.includes('?') ? '&' : '?') + 'action=getAllData';
+            const resp = await fetch(url);
+            const data = await resp.json();
+
+            allSessions = data.sessions || [];
+            allMessages = data.messages || [];
+
+            if (allSessions.length === 0) {
+                document.getElementById('empty-state').classList.remove('hidden');
+                document.getElementById('loading-card').classList.add('hidden');
+                document.getElementById('load-btn').disabled = false;
+                return;
+            }
+
+            analyzeAndRender();
+
+        } catch (err) {
+            alert('Failed to load data: ' + err.message);
+        }
+
+        document.getElementById('loading-card').classList.add('hidden');
+        document.getElementById('load-btn').disabled = false;
+    }
+
+    // ============================================
+    // ANALYSIS
+    // ============================================
+    function analyzeAndRender() {
+        // Build structured session objects
+        analyzedSessions = allSessions.map(function(s) {
+            var sessionId = s['Session ID'];
+            var sessionMessages = allMessages.filter(function(m) { return m['Session ID'] === sessionId; });
+
+            // Group messages by case
+            var caseMap = {};
+            sessionMessages.forEach(function(m) {
+                var caseNum = m['Case Number'];
+                if (!caseMap[caseNum]) {
+                    caseMap[caseNum] = { title: m['Case Title'], messages: [] };
+                }
+                caseMap[caseNum].messages.push({
+                    role: m['Message Role'],
+                    content: m['Message Content'] || '',
+                    order: m['Message Order']
+                });
+            });
+
+            // Sort messages within each case
+            Object.keys(caseMap).forEach(function(k) {
+                caseMap[k].messages.sort(function(a, b) { return a.order - b.order; });
+            });
+
+            var cases = Object.values(caseMap);
+
+            // Classify behaviors
+            var behaviors = {};
+            var fluencyScore = 0;
+            BEHAVIORS.forEach(function(b) {
+                var present = b.classify({ cases: cases });
+                behaviors[b.id] = present;
+                if (present) fluencyScore++;
+            });
+
+            return {
+                sessionId: sessionId,
+                timestamp: s['Timestamp'],
+                name: s['Name'],
+                email: s['Email'],
+                role: s['Role'],
+                specialty: s['Specialty'],
+                timeTaken: parseInt(s['Time Taken (sec)']) || 0,
+                sectionsCompleted: s['Sections Completed'],
+                totalInteractions: parseInt(s['Total AI Interactions']) || 0,
+                cases: cases,
+                behaviors: behaviors,
+                fluencyScore: fluencyScore
+            };
+        });
+
+        renderDashboard();
+    }
+
+    // ============================================
+    // RENDERING
+    // ============================================
+    function renderDashboard() {
+        document.getElementById('dashboard').classList.remove('hidden');
+
+        renderStats();
+        renderBehaviorList();
+        renderCompetencyChart();
+        renderIterationChart();
+        renderTrendChart();
+        renderSessionTable();
+    }
+
+    function renderStats() {
+        var n = analyzedSessions.length;
+        document.getElementById('stat-sessions').textContent = n;
+        document.getElementById('stat-messages').textContent = allMessages.length;
+
+        var avgQueries = n > 0
+            ? (analyzedSessions.reduce(function(sum, s) { return sum + s.totalInteractions; }, 0) / n).toFixed(1)
+            : 0;
+        document.getElementById('stat-avg-queries').textContent = avgQueries;
+
+        var avgTime = n > 0
+            ? (analyzedSessions.reduce(function(sum, s) { return sum + s.timeTaken; }, 0) / n / 60).toFixed(1)
+            : 0;
+        document.getElementById('stat-avg-time').textContent = avgTime;
+    }
+
+    function renderBehaviorList() {
+        var container = document.getElementById('behavior-list');
+        container.innerHTML = '';
+
+        var n = analyzedSessions.length;
+        if (n === 0) return;
+
+        // Calculate prevalence for each behavior
+        var prevalences = BEHAVIORS.map(function(b) {
+            var count = analyzedSessions.filter(function(s) { return s.behaviors[b.id]; }).length;
+            return { behavior: b, pct: (count / n * 100) };
+        });
+
+        // Sort by prevalence descending
+        prevalences.sort(function(a, b) { return b.pct - a.pct; });
+
+        prevalences.forEach(function(p) {
+            var colors = COMPETENCY_COLORS[p.behavior.competency];
+            var li = document.createElement('li');
+            li.className = 'behavior-item';
+            li.innerHTML =
+                '<span class="behavior-name">' + p.behavior.name +
+                '<span class="competency-tag tag-' + p.behavior.competency + '">' + colors.label + '</span></span>' +
+                '<div class="behavior-bar-container">' +
+                '<div class="behavior-bar" style="width: ' + Math.max(p.pct, 3) + '%; background: ' + colors.bg + ';">' +
+                (p.pct >= 10 ? p.pct.toFixed(1) + '%' : '') +
+                '</div></div>' +
+                '<span class="behavior-pct">' + p.pct.toFixed(1) + '%</span>';
+            container.appendChild(li);
+        });
+    }
+
+    function renderCompetencyChart() {
+        var n = analyzedSessions.length;
+        if (n === 0) return;
+
+        var competencies = {};
+        BEHAVIORS.forEach(function(b) {
+            if (!competencies[b.competency]) competencies[b.competency] = [];
+            var count = analyzedSessions.filter(function(s) { return s.behaviors[b.id]; }).length;
+            competencies[b.competency].push(count / n * 100);
+        });
+
+        var labels = Object.keys(competencies).map(function(k) { return COMPETENCY_COLORS[k].label; });
+        var avgs = Object.keys(competencies).map(function(k) {
+            var arr = competencies[k];
+            return arr.reduce(function(a, b) { return a + b; }, 0) / arr.length;
+        });
+        var bgColors = Object.keys(competencies).map(function(k) { return COMPETENCY_COLORS[k].bg; });
+
+        var ctx = document.getElementById('competency-chart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Avg prevalence %',
+                    data: avgs,
+                    backgroundColor: bgColors,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, max: 100, ticks: { callback: function(v) { return v + '%'; } } } }
+            }
+        });
+    }
+
+    function renderIterationChart() {
+        var n = analyzedSessions.length;
+        if (n === 0) return;
+
+        var iterative = analyzedSessions.filter(function(s) { return s.behaviors.iteration; });
+        var nonIterative = analyzedSessions.filter(function(s) { return !s.behaviors.iteration; });
+
+        var behaviorNames = BEHAVIORS.filter(function(b) { return b.id !== 'iteration'; }).map(function(b) { return b.name; });
+        var iterRates = BEHAVIORS.filter(function(b) { return b.id !== 'iteration'; }).map(function(b) {
+            return iterative.length > 0
+                ? iterative.filter(function(s) { return s.behaviors[b.id]; }).length / iterative.length * 100
+                : 0;
+        });
+        var nonIterRates = BEHAVIORS.filter(function(b) { return b.id !== 'iteration'; }).map(function(b) {
+            return nonIterative.length > 0
+                ? nonIterative.filter(function(s) { return s.behaviors[b.id]; }).length / nonIterative.length * 100
+                : 0;
+        });
+
+        var ctx = document.getElementById('iteration-chart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: behaviorNames,
+                datasets: [
+                    { label: 'With iteration', data: iterRates, backgroundColor: 'rgba(5, 150, 105, 0.7)', borderRadius: 4 },
+                    { label: 'Without iteration', data: nonIterRates, backgroundColor: 'rgba(209, 213, 219, 0.8)', borderRadius: 4 }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: { legend: { position: 'top' } },
+                scales: { x: { beginAtZero: true, max: 100, ticks: { callback: function(v) { return v + '%'; } } } }
+            }
+        });
+    }
+
+    function renderTrendChart() {
+        if (analyzedSessions.length < 2) {
+            document.getElementById('trend-chart').parentElement.parentElement.classList.add('hidden');
+            return;
+        }
+
+        // Group sessions by date
+        var byDate = {};
+        analyzedSessions.forEach(function(s) {
+            var date = s.timestamp ? s.timestamp.substring(0, 10) : 'unknown';
+            if (!byDate[date]) byDate[date] = [];
+            byDate[date].push(s);
+        });
+
+        var dates = Object.keys(byDate).sort();
+        var avgScores = dates.map(function(d) {
+            var sessions = byDate[d];
+            return sessions.reduce(function(sum, s) { return sum + s.fluencyScore; }, 0) / sessions.length;
+        });
+        var sessionCounts = dates.map(function(d) { return byDate[d].length; });
+
+        var ctx = document.getElementById('trend-chart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [
+                    {
+                        label: 'Avg Fluency Score (out of 11)',
+                        data: avgScores,
+                        borderColor: 'rgba(37, 99, 235, 0.8)',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Sessions per day',
+                        data: sessionCounts,
+                        borderColor: 'rgba(156, 163, 175, 0.6)',
+                        borderDash: [5, 5],
+                        tension: 0.3,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    y: { beginAtZero: true, max: 11, title: { display: true, text: 'Fluency Score' } },
+                    y1: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Sessions' } }
+                }
+            }
+        });
+    }
+
+    function renderSessionTable() {
+        var tbody = document.getElementById('session-table-body');
+        tbody.innerHTML = '';
+
+        var sorted = analyzedSessions.slice().sort(function(a, b) {
+            return (b.timestamp || '').localeCompare(a.timestamp || '');
+        });
+
+        sorted.forEach(function(s) {
+            var mins = Math.floor(s.timeTaken / 60);
+            var secs = s.timeTaken % 60;
+            var date = s.timestamp ? new Date(s.timestamp).toLocaleDateString() : '-';
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td>' + date + '</td>' +
+                '<td>' + (s.name || '-') + '</td>' +
+                '<td>' + (s.role || '-') + (s.specialty ? ' - ' + s.specialty : '') + '</td>' +
+                '<td>' + mins + ':' + String(secs).padStart(2, '0') + '</td>' +
+                '<td>' + (s.sectionsCompleted || '-') + '</td>' +
+                '<td>' + s.totalInteractions + '</td>' +
+                '<td><strong>' + s.fluencyScore + '/11</strong></td>';
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Save endpoint to localStorage
+    document.getElementById('endpoint-input').addEventListener('change', function() {
+        localStorage.setItem('aitest_analysis_endpoint', this.value);
+    });
+    // Restore on load
+    (function() {
+        var saved = localStorage.getItem('aitest_analysis_endpoint');
+        if (saved) document.getElementById('endpoint-input').value = saved;
+    })();
+    </script>
+</body>
+</html>

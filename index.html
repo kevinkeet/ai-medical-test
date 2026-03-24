@@ -785,6 +785,9 @@
             // Cloudflare Worker proxy (no local server needed)
             apiEndpoint: 'https://aitest-proxy.kevinkeet.workers.dev',
 
+            // Google Apps Script logging endpoint
+            loggingEndpoint: 'https://script.google.com/macros/s/AKfycbxC99dfeTB35_QLg3V5StqQpB-qGh3OfhbcUNhkYgVPxzB6cT1Af2Byef3cS2Unyb9hgA/exec',
+
             // Set to false to use real LLM via the proxy
             useMockResponses: false,
 
@@ -1965,7 +1968,38 @@ Is there a specific aspect you'd like me to elaborate on?`);
             clearInterval(state.timerInterval);
             state.endTime = new Date();
 
+            submitSessionLog();
             showResults();
+        }
+
+        function submitSessionLog() {
+            if (!CONFIG.loggingEndpoint) return;
+
+            try {
+                const timeTaken = CONFIG.totalTime - state.timeRemaining;
+                const completed = state.responses.filter(r => r.response).length;
+
+                const payload = {
+                    participant: state.participant,
+                    timeTaken: timeTaken,
+                    sectionsCompleted: completed + '/5',
+                    totalAiInteractions: state.totalAiInteractions,
+                    responses: state.responses.map(r => ({
+                        response: r.response || '',
+                        chatHistory: r.chatHistory || []
+                    })),
+                    cases: CASES.map(c => c.title)
+                };
+
+                fetch(CONFIG.loggingEndpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(payload),
+                    mode: 'no-cors'
+                }).catch(function() {});
+            } catch (e) {
+                // Silent fail — logging should never block the user experience
+            }
         }
 
         function showResults() {
