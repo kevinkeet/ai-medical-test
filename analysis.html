@@ -512,7 +512,7 @@
 
         try {
             const url = endpoint + (endpoint.includes('?') ? '&' : '?') + 'action=getAllData';
-            const resp = await fetch(url);
+            const resp = await fetch(url, { redirect: 'follow' });
             const data = await resp.json();
 
             allSessions = data.sessions || [];
@@ -817,10 +817,11 @@
     document.getElementById('endpoint-input').addEventListener('change', function() {
         localStorage.setItem('aitest_analysis_endpoint', this.value);
     });
-    // Restore on load
+    // Restore on load (default to deployed endpoint)
     (function() {
+        var defaultEndpoint = 'https://script.google.com/macros/s/AKfycbxC99dfeTB35_QLg3V5StqQpB-qGh3OfhbcUNhkYgVPxzB6cT1Af2Byef3cS2Unyb9hgA/exec';
         var saved = localStorage.getItem('aitest_analysis_endpoint');
-        if (saved) document.getElementById('endpoint-input').value = saved;
+        document.getElementById('endpoint-input').value = saved || defaultEndpoint;
     })();
     </script>
 </body>
