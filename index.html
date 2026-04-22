@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical AI Competency Assessment</title>
+    <title>Assessment</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
@@ -791,34 +791,13 @@
     <!-- Registration Page -->
     <div id="registration-page" class="container">
         <div class="registration">
-            <h2>Medical AI Competency Assessment</h2>
-            <p>This assessment evaluates your ability to effectively use AI tools in clinical practice. You will work through clinical cases in phases, building your reasoning as new information is revealed.</p>
+            <h2>Assessment</h2>
+            <p>You will work through clinical cases in phases, building your reasoning as new information is revealed.</p>
 
             <form id="registration-form">
                 <div class="form-group">
-                    <label for="participant-name">Full Name <span style="color: var(--gray-300); font-weight: normal;">(optional)</span></label>
-                    <input type="text" id="participant-name" placeholder="Dr. Jane Smith">
-                </div>
-                <div class="form-group">
-                    <label for="participant-email">Email <span style="color: var(--gray-300); font-weight: normal;">(optional)</span></label>
-                    <input type="email" id="participant-email" placeholder="jane.smith@hospital.org">
-                </div>
-                <div class="form-group">
-                    <label for="participant-role">Role <span style="color: var(--gray-300); font-weight: normal;">(optional)</span></label>
-                    <select id="participant-role">
-                        <option value="">Select your role</option>
-                        <option value="Attending Physician">Attending Physician</option>
-                        <option value="Resident">Resident</option>
-                        <option value="Fellow">Fellow</option>
-                        <option value="Medical Student">Medical Student</option>
-                        <option value="Nurse Practitioner">Nurse Practitioner</option>
-                        <option value="Physician Assistant">Physician Assistant</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="participant-specialty">Specialty <span style="color: var(--gray-300); font-weight: normal;">(optional)</span></label>
-                    <input type="text" id="participant-specialty" placeholder="Internal Medicine">
+                    <label for="participant-study-id">Study ID Number</label>
+                    <input type="text" id="participant-study-id" placeholder="e.g. 001" required>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
                     Begin Assessment
@@ -830,7 +809,7 @@
     <!-- Main Assessment Page -->
     <div id="assessment-page" class="container hidden">
         <div class="header">
-            <h1>Medical AI Competency Assessment</h1>
+            <h1>Assessment</h1>
             <div class="header-info">
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
@@ -1297,11 +1276,13 @@
         // ============================================
         function handleRegistration(e) {
             e.preventDefault();
+            const studyId = document.getElementById('participant-study-id').value.trim();
             state.participant = {
-                name: document.getElementById('participant-name').value,
-                email: document.getElementById('participant-email').value,
-                role: document.getElementById('participant-role').value,
-                specialty: document.getElementById('participant-specialty').value,
+                studyId: studyId,
+                name: studyId,   // used as display/name for back-compat
+                email: '',
+                role: '',
+                specialty: '',
                 date: new Date().toISOString()
             };
             startAssessment();
@@ -1897,9 +1878,7 @@
 
             // Participant info
             document.getElementById('results-participant-info').textContent =
-                (state.participant.name || 'Anonymous') + ' | ' +
-                (state.participant.role || 'N/A') + ' - ' +
-                (state.participant.specialty || 'N/A') + ' | ' +
+                'Study ID: ' + (state.participant.studyId || 'Anonymous') + ' | ' +
                 new Date().toLocaleDateString();
 
             // Time taken
@@ -2018,13 +1997,11 @@
             // Title
             doc.setFontSize(18);
             doc.setFont(undefined, 'bold');
-            doc.text('Medical AI Competency Assessment Report', margin, y);
+            doc.text('Assessment Report', margin, y);
             y += 12;
 
             // Participant info
-            addText('Participant: ' + (state.participant.name || 'Anonymous'));
-            addText('Email: ' + (state.participant.email || 'N/A'));
-            addText('Role: ' + (state.participant.role || 'N/A') + ' - ' + (state.participant.specialty || 'N/A'));
+            addText('Study ID: ' + (state.participant.studyId || 'Anonymous'));
             addText('Date: ' + new Date(state.participant.date).toLocaleString());
             y += 5;
 
@@ -2115,8 +2092,8 @@
                 doc.setTextColor(0);
             }
 
-            const filename = 'AI_Competency_Assessment_' +
-                (state.participant.name || 'Anonymous').replace(/\s+/g, '_') + '_' +
+            const filename = 'Assessment_' +
+                (state.participant.studyId || 'Anonymous').replace(/\s+/g, '_') + '_' +
                 new Date().toISOString().split('T')[0] + '.pdf';
             doc.save(filename);
         }
